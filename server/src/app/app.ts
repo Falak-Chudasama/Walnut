@@ -1,6 +1,5 @@
 import cors from "cors";
 import dotenv from "dotenv";
-// import { marked } from "marked";
 import express, { Request, Response } from "express";
 import groqAPI from "../apis/groq.apis";
 

@@ -27,10 +27,21 @@ function App() {
 			}
 
 			const data = await res.json();
-			setResponse(data.result);
+			responseAnimation(data.result);
 		} catch (err) {
 			console.error(err);
-			setResponse('Error fetching response.');
+			responseAnimation('Error fetching response.');
+		}
+	}
+
+	async function responseAnimation(response: string): Promise<void> {
+		let currResponse: string = "";
+
+		for (let i = 0; i < response.length; i++) {
+			await setTimeout(() => {
+				currResponse += response[i];
+				setResponse(currResponse);
+			}, i * 8);
 		}
 	}
 
