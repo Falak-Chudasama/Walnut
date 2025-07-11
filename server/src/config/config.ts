@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import dotenv from "dotenv";
 
-dotenv.config();
+dotenv.config({ quiet: true });
 
 const connectDb = async (): Promise<void> => {
     const MONGO_URI = process.env.MONGO_URI;
