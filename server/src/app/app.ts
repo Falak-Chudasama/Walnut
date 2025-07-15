@@ -17,7 +17,7 @@ app.use(cors({
 
 const models: { [key: string]: string } = {
     deepseek: 'deepseek-r1-distill-llama-70b',
-    llama: "llama-3.3-70b-versatile",
+    llama3: "llama-3.3-70b-versatile",
     llama_maverick: 'meta-llama/llama-4-maverick-17b-128e-instruct',
     llama_scout: 'meta-llama/llama-4-scout-17b-16e-instruct',
     llama_guard: 'meta-llama/llama-guard-4-12b',
