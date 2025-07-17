@@ -1,7 +1,9 @@
 import PromptField from "./PromptField";
+import WalnutTitleLogo from "./WalnutTitleLogo";
 
 const components = [
-    PromptField
+    PromptField,
+    WalnutTitleLogo
 ];
 
 export default components;

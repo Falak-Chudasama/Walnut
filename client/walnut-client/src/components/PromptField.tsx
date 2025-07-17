@@ -1,34 +1,35 @@
-import { useContext, useState } from "react";
-import getResponse from "../api/getResponse";
-import ReactMarkdown from "react-markdown";
-import { PromptContext, ModelContext } from "../context/context";
+import { useContext, useState, useRef, useEffect } from "react";
+import { PromptContext, PromptCountContext } from "../context/context";
 
-function PromptField() {
+function PromptField(getToBottom: boolean) {
     const { setPrompt } = useContext(PromptContext)!;
-
-    const { prompt } = useContext(PromptContext)!;
-    const { model } = useContext(ModelContext)!;
-    const [response, setResponse] = useState('');
+    const { promptCount, setPromptCount } = useContext(PromptCountContext)!;
     const [isFocused, setIsFocused] = useState(false);
+    const inputRef = useRef<HTMLInputElement>(null);
 
-    async function responseAnimation(response: string): Promise<void> {
-        let currResponse: string = "";
+    useEffect(() => {
+        const sendBtn = inputRef.current;
+        
+        if (sendBtn) {
+            const keyDownEvent = (event: KeyboardEvent) => {
+                if (event.key === "Enter") {
+                    setPromptCount(promptCount + 1);
+                }
+            }
 
-        for (let i = 0; i < response.length; i++) {
-            await setTimeout(() => {
-                currResponse += response[i];
-                setResponse(currResponse);
-            }, i * 8);
+            sendBtn.addEventListener("keydown", keyDownEvent);
+
+            return () => sendBtn.removeEventListener("keydown", keyDownEvent);
         }
-    }
 
-    async function promptSubmission(prompt: string) {
-        const response = await getResponse(prompt, model);
-        responseAnimation(response);
-    }
+    }, [promptCount, setPromptCount]);
 
     return (
-        <div className="grid justify-center">
+        <div className={`
+            fixed bottom-60 left-0 right-0 grid justify-center
+            transition-transform duration-500 ease-in-out
+            ${!getToBottom ? 'translate-y-0' : 'translate-y-[calc(50vh-5rem)]'}
+        `}>
             <div className={`${isFocused ? 'w-2xl' : 'w-xl'} hover:w-2xl duration-500 gradient-border`}>
                 <div className="
                         duration-500
@@ -38,6 +39,7 @@ function PromptField() {
                         inner
                         ">
                     <input
+                        ref={inputRef}
                         type="text"
                         placeholder="Ask anything..."
                         onChange={(e) => setPrompt(e.target.value)}
@@ -62,7 +64,7 @@ function PromptField() {
                             font-lato
                         "
                     />
-                    <button onClick={() => promptSubmission(prompt)}
+                    <button onClick={() => setPromptCount(promptCount + 1)}
                         className="
                             rounded-full
                             text-white
@@ -77,7 +79,6 @@ function PromptField() {
                     </button>
                 </div>
             </div>
-            <ReactMarkdown>{response}</ReactMarkdown>
         </div>
     );
 }
