@@ -1,1 +1,8 @@
-1. Add every style into the tailwind.config.ts
+2. Add a chat summary button
+3. Add chaining of text
+4. Add user auth
+5. Add speak out loud button
+6. Also present <think> differently like dropdown
+7. Add every style into the tailwind.config.ts
+8. Also suggest prompts to make more.
+9. Set walnut mood and response length

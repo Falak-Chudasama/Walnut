@@ -4,7 +4,6 @@
 @theme {
     --font-pacifico: "Pacifico";
     --font-lato: "Lato";
-    --font-lato-italic: "Lato:ital";
     --font-weight-thin: 100;
     --font-weight-light: 300;
     --font-weight-regular: 400;
@@ -16,7 +15,9 @@
     --color-walnut-accent: #D27E19;
     --color-walnut-accent-darker: #A66013;
     --color-walnut-pale: #FFF5E8;
-    --color-walnut-accent-75: rgba(255, 223, 181, 0.95);
+    --color-walnut-accent-40: rgba(255, 223, 181, 0.4);
+
+    --animate-spin-slow: 'spin 40s linear infinite';
 }
 
 :root {
@@ -25,50 +26,5 @@
     --walnut-accent: #D27E19;
     --walnut-accent-darker: #A66013;
     --walnut-pale: #FFF5E8;
-    --walnut-accent-75: rgba(255, 223, 181, 0.95);
-}
-
-/* .bg-walnut-dark {
-    background-color: var(--walnut-dark);
-}
-
-.bg-walnut-dark:hover {
-    background-color: var(--walnut-darker);
-}
-
-.bg-walnut-darker {
-    background-color: var(--walnut-darker);
-}
-
-.text-walnut-dark {
-    color: var(--walnut-dark);
-}
-
-.ph-walnut {
-    color: var(--walnut-dark);
-}
-
-.bg-walnut-accent {
-    background-color: var(--walnut-accent);
-}
-
-.bg-walnut-pale {
-    background-color: var(--walnut-pale);
-}
-
-.bg-walnut-accent-75 {
-    background-color: var(--walnut-accent-75);
-} */
-
-.gradient-border {
-    background: linear-gradient(0deg,
-    var(--walnut-dark),
-    var(--walnut-accent));
-    padding: 3px;
-    border-radius: 9999px;
-}
-
-.gradient-border .inner {
-    background: var(--walnut-accent-75);
-    border-radius: 9999px;
+    --walnut-accent-75: rgba(255, 223, 181, 0.75);
 }
