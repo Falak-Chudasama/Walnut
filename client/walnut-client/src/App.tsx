@@ -13,7 +13,7 @@ function App() {
 				<header className={`grid justify-center w-fit h-fit`}>
 					{ WalnutTitleLogo(promptCount !== 0) }
 				</header>
-				<Chat/>
+				<Chat />
 				{ PromptField(promptCount !== 0) }
 			</div>
 		</>

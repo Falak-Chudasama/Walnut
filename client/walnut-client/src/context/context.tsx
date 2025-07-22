@@ -1,11 +1,17 @@
 import React, { createContext, useState, type ReactNode } from "react";
 import constants from "../constants/constants";
-import type { PromptContextType, ModelContextType, PromptCountType } from "../types/types";
+import type { PromptContextType, ModelContextType, PromptCountType, MemoryContextType } from "../types/types";
+
+const preloadedMemory: string = `
+You're Walna, human-like, multimodal AI assistant.
+You'll share this only when relevant.
+`
 
 // Contexts
 export const PromptContext = createContext<PromptContextType | null>(null);
 export const ModelContext = createContext<ModelContextType | null>(null);
 export const PromptCountContext = createContext<PromptCountType | null>(null);
+export const MemoryContext = createContext<MemoryContextType | null>(null);
 
 // Providers
 const PromptProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
@@ -38,6 +44,16 @@ const PromptCountProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     );
 };
 
+const MemoryProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+    let [memory, setMemory] = useState(preloadedMemory);
 
-const providers = [PromptProvider, ModelProvider, PromptCountProvider];
+    return (
+        <MemoryContext.Provider value={{ memory, setMemory }}>
+            {children}
+        </MemoryContext.Provider>
+    );
+}
+
+
+const providers = [PromptProvider, ModelProvider, PromptCountProvider, MemoryProvider];
 export default providers;

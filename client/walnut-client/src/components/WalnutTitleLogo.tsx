@@ -9,7 +9,7 @@ function WalnutTitleLogo(shrinkSize: boolean) {
                 <img src="./walnut.png" alt="walnut-logo" className="h-20" />
                 <h1 className="ml-4">
                     <span className="text-7xl text-walnut-accent font-pacifico">Wal</span>
-                    <span className="text-7xl text-walnut-dark font-pacifico">nut</span>
+                    <span className="text-7xl text-walnut-dark font-pacifico">na</span>
                 </h1>
             </div>
             {

@@ -9,15 +9,13 @@
     --font-weight-regular: 400;
     --font-weight-bold: 700;
     --font-weight-black: 900;
-    
+
     --color-walnut-dark: #542B00;
     --color-walnut-darker: #3D2000;
     --color-walnut-accent: #D27E19;
     --color-walnut-accent-darker: #A66013;
     --color-walnut-pale: #FFF5E8;
     --color-walnut-accent-40: rgba(255, 223, 181, 0.4);
-
-    --animate-spin-slow: 'spin 40s linear infinite';
 }
 
 :root {

@@ -4,26 +4,28 @@ import { Groq } from "groq-sdk";
 
 dotenv.config({ quiet: true });
 
-const API_KEY = process.env.GROQ_API_KEY || null;
-if (!API_KEY) throw new Error('Main API key for groq was not specified');
+const API_KEY = process.env.GROQ_SUMMARIZER_API_KEY;
+if (!API_KEY) throw new Error('Summarizer API key for groq was not specified');
 
 const groq = new Groq({ apiKey: API_KEY });
 
-async function groqAPI(prompt: string, model: string = 'llama', maxCompletionTokens: number = 1024): Promise<string> {
+async function groqAPISummarizer(context: string, model: string = 'llama', maxCompletionTokens: number = 1024): Promise<string> {
     try {
+
         const chatCompletion = await groq.chat.completions.create({
             "messages": [
                 {
-                    "role": "user",
-                    "content": prompt
+                    "role": "system",
+                    "content": context
                 }
             ],
             "model": model,
-            "temperature": 1,
             "max_completion_tokens": maxCompletionTokens,
-            "top_p": 1,
             "stream": true,
-            "stop": null
+            temperature: 0.3,
+            top_p: 0.95,
+            stop: ["\n\n", "[END]"]
+
         });
 
         let response: string[] = [];
@@ -34,9 +36,9 @@ async function groqAPI(prompt: string, model: string = 'llama', maxCompletionTok
 
         return response.join('');
     } catch (err) {
-        errorHandler('./src/apis/groq.apis.ts', err);
+        errorHandler('./src/apis/summarizer.apis.ts', err);
         return "<error_occurence>";
     }
 }
 
-export default groqAPI;
+export default groqAPISummarizer;

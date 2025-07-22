@@ -2,6 +2,8 @@ import cors from "cors";
 import dotenv from "dotenv";
 import express, { Request, Response } from "express";
 import groqAPI from "../apis/groq.apis";
+import groqAPISummarizer from "../apis/summarizer.apis";
+import TTS from "../apis/tts.apis";
 
 dotenv.config({ quiet: true });
 
@@ -37,8 +39,6 @@ app.post('/ai', async (req: Request, res: Response) => {
         const prompt: string = req.body.prompt;
         const requestedModel: string = models[req.body.model];
     
-        if (!requestedModel) throw new Error('Invalid AI model was chosen');
-    
         if (!prompt) {
             return res.status(400).send('Prompt is required');
         }
@@ -48,6 +48,43 @@ app.post('/ai', async (req: Request, res: Response) => {
         }
 
         const result: string = await groqAPI(prompt, requestedModel);
+
+        res.send({ result });
+    } catch (err) {
+        res.status(500).send('Internal Server Error: ' + err);
+    }
+});
+
+app.post('/ai/summarize', async (req: Request, res: Response) => {
+    try {
+        const context: string = req.body.context;
+        const requestedModel: string = models[req.body.model];
+    
+        if (!context) {
+            return res.status(400).send('Context is required');
+        }
+
+        if (!requestedModel) {
+            return res.status(400).send('Invalid AI model was chosen');
+        }
+
+        const result: string = await groqAPISummarizer(context, requestedModel);
+
+        res.send({ result });
+    } catch (err) {
+        res.status(500).send('Internal Server Error: ' + err);
+    }
+});
+
+app.post('/ai/tts', async (req: Request, res: Response) => {
+    try {
+        const text: string = req.body.text;
+
+        if (!text) {
+            return res.status(400).send('Text is required');
+        }
+
+        const result = await TTS(text);
 
         res.send({ result });
     } catch (err) {

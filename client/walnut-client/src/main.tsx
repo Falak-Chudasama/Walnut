@@ -3,13 +3,15 @@ import './index.css'
 import App from './App.tsx'
 import contextProviders from './context/context.tsx'
 
-const [PromptProvider, ModelProvider, PromptCountProvider] = contextProviders;
+const [PromptProvider, ModelProvider, PromptCountProvider, MemoryContext] = contextProviders;
 
 createRoot(document.getElementById('root')!).render(
 	<PromptProvider>
 		<ModelProvider>
 			<PromptCountProvider>
-				<App/>
+				<MemoryContext>
+					<App/>
+				</MemoryContext>
 			</PromptCountProvider>
 		</ModelProvider>
 	</PromptProvider>,
