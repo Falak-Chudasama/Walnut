@@ -3,7 +3,6 @@ import dotenv from "dotenv";
 import express, { Request, Response } from "express";
 import groqAPI from "../apis/groq.apis";
 import groqAPISummarizer from "../apis/summarizer.apis";
-import TTS from "../apis/tts.apis";
 
 dotenv.config({ quiet: true });
 
@@ -18,7 +17,7 @@ app.use(cors({
 }));
 
 const models: { [key: string]: string } = {
-    deepseek: 'deepseek-r1-distill-llama-70b',
+    // deepseek: 'deepseek-r1-distill-llama-70b',
     llama3: "llama-3.3-70b-versatile",
     llama_maverick: 'meta-llama/llama-4-maverick-17b-128e-instruct',
     llama_scout: 'meta-llama/llama-4-scout-17b-16e-instruct',
@@ -26,7 +25,7 @@ const models: { [key: string]: string } = {
     mistral: "mistral-saba-24b",
     qwen3: 'qwen/qwen3-32b',
     gemma: 'gemma2-9b-it',
-    whisper: 'distil-whisper-large-v3-en',
+    // whisper: 'distil-whisper-large-v3-en', this is a voice model
     compoud: 'compound-beta',
 };
 
@@ -69,22 +68,6 @@ app.post('/ai/summarize', async (req: Request, res: Response) => {
         }
 
         const result: string = await groqAPISummarizer(context, requestedModel);
-
-        res.send({ result });
-    } catch (err) {
-        res.status(500).send('Internal Server Error: ' + err);
-    }
-});
-
-app.post('/ai/tts', async (req: Request, res: Response) => {
-    try {
-        const text: string = req.body.text;
-
-        if (!text) {
-            return res.status(400).send('Text is required');
-        }
-
-        const result = await TTS(text);
 
         res.send({ result });
     } catch (err) {

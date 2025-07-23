@@ -1,6 +1,6 @@
 import { useContext, useState, useEffect, useRef, type JSX } from "react";
 import ReactMarkdown from "react-markdown";
-import getResponse, { speakAloud } from "../api/api";
+import getResponse, { speakAloud } from "../apis/apis";
 import { PromptContext, ModelContext, PromptCountContext, MemoryContext } from "../context/context";
 
 interface Message {
@@ -92,6 +92,7 @@ function Chat() {
     };
 
     const createResponseDiv = (response: string): JSX.Element => {
+
         const copyToClipboard = async () => {
             try {
                 await navigator.clipboard.writeText(response);
@@ -106,12 +107,12 @@ function Chat() {
                 <ReactMarkdown>{response}</ReactMarkdown>
 
                 <div className="flex space-x-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    <button
+                    {/* <button
                         className="cursor-pointer h-5 w-5 ml-2 hover:brightness-50 duration-500"
-                        // onClick={() => speakAloud(response)}
+                        onClick={() => speakAloud(response)}
                     >
                         <img src="./speak-aloud-icon.png" alt="speak-aloud-icon" />
-                    </button>
+                    </button> */}
 
                     <button
                         className="cursor-pointer h-4 w-4 ml-2 hover:brightness-50 duration-500"

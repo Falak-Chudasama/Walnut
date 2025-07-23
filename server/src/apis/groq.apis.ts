@@ -24,6 +24,7 @@ async function groqAPI(prompt: string, model: string = 'llama', maxCompletionTok
             "top_p": 1,
             "stream": true,
             "stop": null
+            // "reasoning_effort": "none"
         });
 
         let response: string[] = [];
@@ -34,6 +35,7 @@ async function groqAPI(prompt: string, model: string = 'llama', maxCompletionTok
 
         return response.join('');
     } catch (err) {
+        console.log(err);
         errorHandler('./src/apis/groq.apis.ts', err);
         return "<error_occurence>";
     }

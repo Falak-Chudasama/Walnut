@@ -46,10 +46,26 @@ New Concise Summary of the entire conversation:
     }
 };
 
-// let prevText: string = '';
-// let prevAudio: HTMLAudioElement | null = null;
+export const speakAloud = (text: string): void => {
+    const utterance = new SpeechSynthesisUtterance(text);
+    const voices = speechSynthesis.getVoices();
 
-export async function speakAloud(text: string): Promise<void> {}
+    const preferredVoice = voices.find((v) => {
+        v.name.includes("Google UK English Female") ||
+            v.name.includes("Google US English") ||
+            v.name.includes("Microsoft Zira") ||
+            (v.lang === "en-US" && v.name.toLowerCase().includes("female"))
+    });
+
+    if (preferredVoice) {
+        utterance.voice = preferredVoice;
+    }
+
+    utterance.pitch = 1;
+    utterance.rate = 1;
+    utterance.volume = 1;
+    speechSynthesis.speak(utterance);
+};
 
 const mood: ('happy' | 'neutral' | 'angry' | 'romantic' | 'sarcastic') = 'happy'
 const responseLength: ('slightly-long' | 'balanced' | 'slightly-short') = 'balanced';

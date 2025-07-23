@@ -1,5 +1,5 @@
 const constants = {
     origin: "http://localhost:5000",
-    defaultModel: "llama_maverick"
+    defaultModel: "mistral"
 };
 export default constants;
