@@ -24,15 +24,15 @@ app.use(cors({
 }));
 
 const groqModels: { [key: string]: string } = {
-    deepseek: 'deepseek-r1-distill-llama-70b',
-    llama3: "llama-3.3-70b-versatile",
-    llama_maverick: 'meta-llama/llama-4-maverick-17b-128e-instruct',
-    llama_scout: 'meta-llama/llama-4-scout-17b-16e-instruct',
-    llama_guard: 'meta-llama/llama-guard-4-12b',
+    llama: "llama-3.3-70b-versatile",
+    // llama_maverick: 'meta-llama/llama-4-maverick-17b-128e-instruct',
+    // llama_scout: 'meta-llama/llama-4-scout-17b-16e-instruct',
+    // llama_guard: 'meta-llama/llama-guard-4-12b',
     mistral: "mistral-saba-24b",
     qwen3: 'qwen/qwen3-32b',
     gemma: 'gemma2-9b-it',
-    compoud: 'compound-beta',
+    // compoud: 'compound-beta',
+    // deepseek: 'deepseek-r1-distill-llama-70b',
 };
 
 const githubModels: { [key: string]: string } = {
@@ -53,14 +53,17 @@ app.post('/ai/groq', async (req: Request, res: Response) => {
         const needReasoning: boolean = req.body.needReasoning;
     
         if (!prompt) {
+            console.log('Prompt is required');
             return res.status(400).send('Prompt is required');
         }
         
         if (!context) {
+            console.log('Context is required');
             return res.status(400).send('Context is required');
         }
-    
+        
         if (!requestedModel) {
+            console.log('Invalid AI model was chosen');
             return res.status(400).send('Invalid AI model was chosen');
         }
 

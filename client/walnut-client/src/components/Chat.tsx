@@ -18,6 +18,10 @@ function Chat() {
     const { memory, setMemory } = useContext(MemoryContext)!;
     const messagesEndRef = useRef<HTMLDivElement>(null);
 
+    useEffect(() => {
+        if (promptCount === 0) setMessages([]);
+    }, [promptCount]);
+
     const scrollToBottom = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
     };
@@ -144,31 +148,33 @@ function Chat() {
     };
 
     return (
-        <div className="w-[calc(100vw-10rem)] h-[calc(85vh)] mx-[5rem] mt-[15vh] relative">
-            <div
-                className="h-full overflow-y-auto overflow-x-hidden"
-                style={{
-                    scrollbarWidth: 'none',
-                    msOverflowStyle: 'none'
-                }}
-            >
-                <style>{`
-                    .chat-container::-webkit-scrollbar {
-                        display: none;
-                    }
-                `}</style>
-                <div className="chat-container space-y-4 mb-36">
-                    {messages.map((message, index) => (
-                        <div key={index} className="w-full flex">
-                            {message.type === 'prompt'
-                                ? createPromptDiv(message.content)
-                                : createResponseDiv(message.content)}
-                        </div>
-                    ))}
-                    <div ref={messagesEndRef} />
+        promptCount !== 0 ? (
+            <div className="w-[calc(100vw-10rem)] h-[calc(85vh)] mx-[5rem] mt-[15vh] relative">
+                <div
+                    className="h-full overflow-y-auto overflow-x-hidden"
+                    style={{
+                        scrollbarWidth: 'none',
+                        msOverflowStyle: 'none'
+                    }}
+                >
+                    <style>{`
+                        .chat-container::-webkit-scrollbar {
+                            display: none;
+                        }
+                    `}</style>
+                    <div className="chat-container space-y-4 mb-36">
+                        {messages.map((message, index) => (
+                            <div key={index} className="w-full flex">
+                                {message.type === 'prompt'
+                                    ? createPromptDiv(message.content)
+                                    : createResponseDiv(message.content)}
+                            </div>
+                        ))}
+                        <div ref={messagesEndRef} />
+                    </div>
                 </div>
             </div>
-        </div>
+        ) : (<></>)
     );
 }
 

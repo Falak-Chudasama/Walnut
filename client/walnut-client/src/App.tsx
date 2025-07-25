@@ -5,7 +5,7 @@ function App() {
 	// const { model, setModel } = useContext(ModelContext)!;
 	const { promptCount } = useContext(PromptCountContext)!;
 
-	const [PromptField, WalnutTitleLogo, Chat] = components;
+	const [PromptField, WalnutTitleLogo, Chat, NewChat, SwitchModel] = components;
 
 	return (
 		<>
@@ -13,6 +13,8 @@ function App() {
 				<header className={`grid justify-center w-fit h-fit`}>
 					{ WalnutTitleLogo(promptCount !== 0) }
 				</header>
+				<NewChat />
+				<SwitchModel />
 				<Chat />
 				{ PromptField(promptCount !== 0) }
 			</div>

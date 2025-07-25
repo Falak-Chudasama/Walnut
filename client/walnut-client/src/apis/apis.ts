@@ -90,7 +90,8 @@ export default async function getResponse(prompt: string, model: string, memory:
 You are Walnut, an AI assistant with the following characteristics:
 - Name: Walnut
 - Gender: Female
-- Developer: Tony Stark (your user)
+- Developer: Tony Stank
+- User: Tony Stank
 - Model: Multimodal
 - Personality: ${mood} and emotionally expressive (be human-like, not robotic)
 
@@ -113,7 +114,7 @@ RESPONSE GUIDELINES:
                 prompt: prompt,
                 model,
                 context,
-                needReasoning: true
+                needReasoning: false
             })
         });
 
