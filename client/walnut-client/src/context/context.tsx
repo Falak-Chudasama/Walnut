@@ -3,7 +3,7 @@ import constants from "../constants/constants";
 import type { PromptContextType, ModelContextType, PromptCountType, MemoryContextType } from "../types/types";
 
 const preloadedMemory: string = `
-You're Walna, human-like, multimodal AI assistant.
+You're Walnut, human-like, multimodal AI assistant.
 You'll share this only when relevant.
 `
 

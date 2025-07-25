@@ -27,7 +27,7 @@ function Chat() {
     }, [messages]);
 
     async function responseAnimation(response: string): Promise<void> {
-        let currResponse: string = "";
+        let currResponse = "";
 
         setMessages(prev => [...prev, { type: 'response', content: '', isAnimating: true }]);
 
@@ -72,53 +72,71 @@ function Chat() {
 
             async function fetchAndAnimateResponse() {
                 const response = await getResponse(prompt, model, memory, setMemory);
-                responseAnimation(response);
+                responseAnimation(response?.response);
             }
 
             fetchAndAnimateResponse();
         }
     }, [promptCount]);
 
-    const createPromptDiv = (prompt: string): JSX.Element => {
-        return (
-            <div className="
-            ml-auto font-lato font-medium italic p-3 
-            bg-walnut-accent text-white max-w-[70%] rounded-2xl break-words
-            fly-up
-            ">
+
+    const copyToClipboard = async (text: string) => {
+        try {
+            await navigator.clipboard.writeText(text);
+        } catch (err) {
+            console.error("Copy failed:", err);
+        }
+    };
+    const createPromptDiv = (prompt: string): JSX.Element => (
+        <div className="group flex flex-col items-end max-w-[70%] ml-auto h-max space-y-1">
+            <div
+                className="
+        font-lato font-medium italic p-3 
+        bg-walnut-accent text-white rounded-2xl break-words 
+        transition-all duration-300 fly-up
+    "
+            >
                 <ReactMarkdown>{prompt}</ReactMarkdown>
             </div>
-        );
-    };
+
+            <button
+                title="Copy prompt"
+                onClick={() => copyToClipboard(prompt)}
+                className="
+        opacity-0 group-hover:opacity-100 
+        transition-opacity duration-300 cursor-pointer
+        hover:brightness-75
+    "
+            >
+                <img
+                    src="./copy-text-icon.png"
+                    alt="Copy"
+                    className="h-4 w-auto mr-3 mt-1 duration-200 hover:scale-115"
+                />
+            </button>
+        </div>
+    );
+
 
     const createResponseDiv = (response: string): JSX.Element => {
-
-        const copyToClipboard = async () => {
-            try {
-                await navigator.clipboard.writeText(response);
-                console.log("Copied to clipboard");
-            } catch (err) {
-                console.error("Failed to copy:", err);
-            }
-        };
 
         return (
             <div className="group mr-auto p-3 font-medium text-walnut-dark max-w-[100%] break-words space-y-2 relative">
                 <ReactMarkdown>{response}</ReactMarkdown>
 
                 <div className="flex space-x-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    {/* <button
-                        className="cursor-pointer h-5 w-5 ml-2 hover:brightness-50 duration-500"
+                    <button
+                        className="cursor-pointer h-5 w-5 ml-2 hover:brightness-50 duration-200 hover:scale-115"
                         onClick={() => speakAloud(response)}
                     >
-                        <img src="./speak-aloud-icon.png" alt="speak-aloud-icon" />
-                    </button> */}
+                        <img src="./speak-aloud-icon.png" alt="Speak" />
+                    </button>
 
                     <button
-                        className="cursor-pointer h-4 w-4 ml-2 hover:brightness-50 duration-500"
-                        onClick={copyToClipboard}
+                        className="cursor-pointer h-4 w-4 ml-2 hover:brightness-50 duration-200 hover:scale-115"
+                        onClick={() => copyToClipboard(response)}
                     >
-                        <img src="./copy-text-icon.png" alt="copy-text-icon" />
+                        <img src="./copy-text-icon.png" alt="Copy" />
                     </button>
                 </div>
             </div>
@@ -144,8 +162,7 @@ function Chat() {
                         <div key={index} className="w-full flex">
                             {message.type === 'prompt'
                                 ? createPromptDiv(message.content)
-                                : createResponseDiv(message.content)
-                            }
+                                : createResponseDiv(message.content)}
                         </div>
                     ))}
                     <div ref={messagesEndRef} />

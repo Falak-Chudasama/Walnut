@@ -1,16 +1,18 @@
 import constants from "../constants/constants";
 
-const summarizerModel: string = "gemma";
+const summarizerModel: string = constants.summarizerModel;
+const mood: ('happy' | 'neutral' | 'angry' | 'romantic' | 'sarcastic') = 'happy'
+const responseNature: ('concise' | 'balanced (concise & detailed)' | 'detailed') = 'concise';
 
 const updateMemory = async (prompt: string, response: string, memory: string, setMemory: (val: string) => void): Promise<void> => {
     const summarizationPrompt = `
 You are a conversation summarizer. Your task is to take the previous summary, the latest user message, and the latest AI response, and create a new, concise summary.
-It is crucial that you retain all key information, names, places, facts, and the user's core intent.
+It is crucial that you retain all key information, names, places, facts, and the user's core intent and even meaningful context.
+Retain every little detail you can fetch from the response and the prompt, you must miss no detail and retain each details for all long even especially from context.
 
 Previous Summary:
 ---
 ${memory || "This is the beginning of the conversation."}
----
 
 Most Recent Exchange:
 ---
@@ -46,64 +48,72 @@ New Concise Summary of the entire conversation:
     }
 };
 
-export const speakAloud = (text: string): void => {
-    const utterance = new SpeechSynthesisUtterance(text);
-    const voices = speechSynthesis.getVoices();
-
-    const preferredVoice = voices.find((v) => {
-        v.name.includes("Google UK English Female") ||
-            v.name.includes("Google US English") ||
-            v.name.includes("Microsoft Zira") ||
-            (v.lang === "en-US" && v.name.toLowerCase().includes("female"))
-    });
-
-    if (preferredVoice) {
-        utterance.voice = preferredVoice;
-    }
-
-    utterance.pitch = 1;
-    utterance.rate = 1;
-    utterance.volume = 1;
-    speechSynthesis.speak(utterance);
-};
-
-const mood: ('happy' | 'neutral' | 'angry' | 'romantic' | 'sarcastic') = 'happy'
-const responseLength: ('slightly-long' | 'balanced' | 'slightly-short') = 'balanced';
-
-export default async function getResponse(prompt: string, model: string, memory: string, setMemory: (val: string) => void): Promise<string> {
-    const promptWithContext = `
-This is the summary of your conversation so far:
----
-${memory || "No context yet."}
----
-
-Your must be ${mood} with your response, be a human with emotions not machine 
----
-
-Your info:
-name: Walna
-model: multimodal
-Gender: female
-Developer: Tony Stark (also Walna's user)
----
-
-Your response should be ${responseLength}
----
-
-Based on that context, please provide a direct response to the user's latest message, respond only necessary information from the context.
-
-User: "${prompt}"
-`;
-
+export const speakAloud = async (text: string, voice: string = "Aaliyah-PlayAI"): Promise<void> => {
+    console.log(text);
     try {
-        const res = await fetch(`${constants.origin}/ai`, {
+        const res = await fetch(`${constants.origin}/ai/tts`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                prompt: promptWithContext,
-                model: model
+                text,
+                voice,
+                model: "playai-tts",
+                responseFormat: "wav"
+            })
+        });
+
+
+        if (!res.ok) {
+            console.error('TTS API request failed:', res.status, res.statusText);
+            return;
+        }
+
+        const { result } = await res.json();
+
+        if (result?.success) {
+            const audio = new Audio(`${constants.origin}/${result.audioPath}`);
+            audio.play().catch(err => console.error("Failed to play TTS audio:", err));
+        } else {
+            console.error("TTS generation failed:", result?.error || "Unknown error");
+        }
+
+    } catch (err) {
+        console.error("Failed to generate TTS:", err);
+    }
+};
+
+
+export default async function getResponse(prompt: string, model: string, memory: string, setMemory: (val: string) => void, needReasoning: boolean = false): Promise<object> {
+    const context = `
+You are Walnut, an AI assistant with the following characteristics:
+- Name: Walnut
+- Gender: Female
+- Developer: Tony Stark (your user)
+- Model: Multimodal
+- Personality: ${mood} and emotionally expressive (be human-like, not robotic)
+
+CONVERSATION MEMORY:
+${memory ? `Previous conversation summary: ${memory}` : "This is the start of our conversation."}
+
+RESPONSE GUIDELINES:
+- Style: ${responseNature}
+- Tone: ${mood} and engaging
+- DO NOT greet the user unless it's genuinely the first interaction
+- Respond naturally as if continuing an ongoing conversation
+- Focus only on addressing the user's current message directly`;
+    try {
+        const res = await fetch(`${constants.origin}/ai/groq`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                prompt: prompt,
+                model,
+                context,
+                needReasoning: true
             })
         });
 
@@ -113,13 +123,16 @@ User: "${prompt}"
         }
 
         const data = await res.json();
-        let aiResponse: string = (data.result);
-        aiResponse = aiResponse.trim().replace(/^"|"$/g, '');
-        updateMemory(prompt, aiResponse, memory, setMemory);
+        let response: string = (data.result.response);
+        updateMemory(prompt, response, memory, setMemory);
 
-        return aiResponse;
+        if (needReasoning) {
+            return { response, reasoning: data.result.reasoning, success: true };
+        }
+
+        return { response, success: true };
     } catch (err) {
         console.error("Failed to get response from AI:", err);
-        return `<Error fetching response>: ${err instanceof Error ? err.message : String(err)}`;
+        return { error: `${err instanceof Error ? err.message : String(err)}`, success: false };
     }
 };
