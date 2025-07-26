@@ -24,7 +24,7 @@ app.use(cors({
 }));
 
 const groqModels: { [key: string]: string } = {
-    llama: "llama-3.3-70b-versatile",
+    llama3: "llama-3.3-70b-versatile",
     // llama_maverick: 'meta-llama/llama-4-maverick-17b-128e-instruct',
     // llama_scout: 'meta-llama/llama-4-scout-17b-16e-instruct',
     // llama_guard: 'meta-llama/llama-guard-4-12b',
@@ -32,10 +32,11 @@ const groqModels: { [key: string]: string } = {
     qwen3: 'qwen/qwen3-32b',
     gemma: 'gemma2-9b-it',
     // compoud: 'compound-beta',
-    // deepseek: 'deepseek-r1-distill-llama-70b',
+    deepseek: 'deepseek-r1-distill-llama-70b',
 };
 
 const githubModels: { [key: string]: string } = {
+    "gpt4o": "openai/gpt-4.1",
     "gpt4.1": "openai/gpt-4.1",
     "gpt4.1-mini": "openai/gpt-4.1-mini",
     "deepseek-r1": "deepseek/DeepSeek-R1",
@@ -67,7 +68,8 @@ app.post('/ai/groq', async (req: Request, res: Response) => {
             return res.status(400).send('Invalid AI model was chosen');
         }
 
-        const result: object = await groqAPI(prompt, requestedModel, context, needReasoning);
+        // const result: object = await groqAPI(prompt, requestedModel, context, needReasoning);
+        const result: object = await groqAPI(prompt, requestedModel, context, true);
 
         res.send({ result });
     } catch (err) {

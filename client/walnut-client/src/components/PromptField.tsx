@@ -18,9 +18,16 @@ function PromptField(getToBottom: boolean) {
     useEffect(() => {
         const inputElement = inputRef.current;
 
+        if (promptCount === 0) {
+            inputElement?.focus();
+            setIsFocused(true);
+        }
+
         if (inputElement) {
             const keyDownEvent = (event: KeyboardEvent) => {
-                if (event.key === "Enter") {
+                if (event.key === "Shift" && event.shiftKey) {
+                    // new line 
+                } else if (event.key === "Enter") {
                     submitInput();
                 }
             }
@@ -79,19 +86,21 @@ function PromptField(getToBottom: boolean) {
                 font-lato
             "
             />
-            <button onClick={() => submitInput()}
-            className="
-                rounded-full
-                text-white
-                h-8
-                px-5
-                m-1
-                bg-walnut-dark
-                duration-500
-                hover:cursor-pointer
-                font-pacifico
-                ">Send
-            </button>
+                <button onClick={() => submitInput()}
+                className="
+                    rounded-full
+                    text-white
+                    h-8
+                    px-5
+                    m-1
+                    bg-walnut-dark
+                    hover:bg-walnut-darker
+                    scale-100
+                    duration-200
+                    hover:cursor-pointer
+                    font-pacifico
+                    ">Send
+                </button>
             </div>
         </div>
     );

@@ -113,7 +113,7 @@ function Chat() {
     "
             >
                 <img
-                    src="./copy-text-icon.png"
+                    src="./copy-text-accent-icon.png"
                     alt="Copy"
                     className="h-4 w-auto mr-3 mt-1 duration-200 hover:scale-115"
                 />
@@ -149,7 +149,7 @@ function Chat() {
 
     return (
         promptCount !== 0 ? (
-            <div className="w-[calc(100vw-10rem)] h-[calc(85vh)] mx-[5rem] mt-[15vh] relative">
+            <div className="w-[calc(100vw-16rem)] h-[calc(85vh)] mx-[8rem] mt-[15vh] relative">
                 <div
                     className="h-full overflow-y-auto overflow-x-hidden"
                     style={{

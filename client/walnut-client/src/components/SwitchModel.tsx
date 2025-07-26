@@ -6,7 +6,13 @@ function SwitchModel() {
     const { model, setModel } = useContext(ModelContext)!;
 
     const models: object = {
-        "llama3": "./llama3.png"
+        "llama3": "./llama.png",
+        "gpt4o": "./gpt.png",
+        "deepseek": "./deepseek.png",
+        "qwen3": "./qwen.png",
+        "phi": "./phi.png",
+        "gemma": "./gemma.png",
+        "mistral": "./mistral.png",
     }
 
     return (
@@ -16,17 +22,17 @@ function SwitchModel() {
                 className={`
                     cursor-pointer
                     transition-all duration-500 ease-in-out
-                    ${promptCount === 0 ? "-translate-x-full" : "-translate-x-24"}
+                    ${promptCount === 0 ? "-translate-x-full" : "-translate-x-18"}
                     group-hover:translate-x-0
-                    flex items-center text-xl font-pacifico
+                    flex items-center justify-between text-xl font-pacifico
                     bg-walnut-dark rounded-tr-full rounded-br-full
-                    w-fit p-2 text-walnut-pale
+                    w-30 p-2 text-walnut-pale
                 `}
             >
-                New Chat
-                <button className="rounded-full bg-walnut-pale h-7 w-7 ml-4 flex items-center justify-center hover:scale-110 duration-200">
-                    <img className="h-5 w-auto" src={ `./plus.png` } alt="model logo" />
-                </button>
+                {model}
+                <div className="rounded-full bg-walnut-pale h-7 w-7 ml-4 flex items-center justify-center hover:scale-110 duration-200">
+                    <img className="h-4.5 w-auto" src={ `${models[model]}` } alt="model logo" />
+                </div>
             </div>
         </div>
     );

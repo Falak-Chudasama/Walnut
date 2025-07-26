@@ -34,7 +34,6 @@ async function groqAPI(prompt: string, model: string = 'llama3', context: string
             "top_p": 1,
             "stream": true,
             "stop": null,
-            "reasoning_effort": "default",
             "reasoning_format": "parsed"
         }
         : {
