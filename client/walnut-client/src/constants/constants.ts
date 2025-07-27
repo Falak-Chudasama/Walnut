@@ -1,6 +1,6 @@
 const constants = {
     origin: "http://localhost:5000",
-    defaultModel: "llama3",
+    defaultModel: "deepseek",
     summarizerModel: "gemma"
 };
 export default constants;

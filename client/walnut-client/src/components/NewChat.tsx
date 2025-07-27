@@ -7,12 +7,15 @@ function NewChat() {
     return (
         <div className="group absolute top-[20%] duration-500 left-0 h-max z-50">
             <div
-                onClick={() => setPromptCount(0)}
+                onClick={() => {
+                    setTimeout(() => {
+                        setPromptCount(0)
+                    }, 100);
+                }}
                 className={`
                     cursor-pointer
                     transition-all duration-500 ease-in-out
-                    ${promptCount === 0 ? "-translate-x-full" : "-translate-x-20"}
-                    group-hover:translate-x-0
+                    ${promptCount === 0 ? "-translate-x-full" : "-translate-x-20 group-hover:translate-x-0"}
                     flex items-center justify-between font-pacifico
                     bg-walnut-dark rounded-tr-full rounded-br-full
                     w-fit p-2 text-walnut-pale
