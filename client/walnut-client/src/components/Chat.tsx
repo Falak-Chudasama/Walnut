@@ -1,6 +1,6 @@
 import { useContext, useState, useEffect, useRef, type JSX } from "react";
 import ReactMarkdown from "react-markdown";
-import getResponse, { speakAloud } from "../apis/apis";
+import getResponse from "../apis/apis";
 import { PromptContext, ModelContext, PromptCountContext, MemoryContext } from "../context/context";
 
 interface Message {
@@ -15,7 +15,6 @@ function Chat() {
     const { prompt } = useContext(PromptContext)!;
     const { promptCount } = useContext(PromptCountContext)!;
     const { model } = useContext(ModelContext)!;
-    const { memory, setMemory } = useContext(MemoryContext)!;
     const messagesEndRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
@@ -75,7 +74,7 @@ function Chat() {
             setMessages(prev => [...prev, { type: 'prompt', content: prompt }]);
 
             async function fetchAndAnimateResponse() {
-                const response = await getResponse(prompt, model, memory, setMemory);
+                const response = await getResponse(prompt, model);
                 responseAnimation(response?.response);
             }
 
@@ -131,7 +130,7 @@ function Chat() {
                 <div className="flex space-x-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                     <button
                         className="cursor-pointer h-5 w-5 ml-2 hover:brightness-50 duration-200 hover:scale-115"
-                        onClick={() => speakAloud(response)}
+                        // onClick={() => speakAloud(response)}
                     >
                         <img src="./speak-aloud-icon.png" alt="Speak" />
                     </button>

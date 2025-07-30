@@ -8,10 +8,10 @@ function SwitchModel() {
     const [modelOptions, setModelOptions] = useState([]);
 
     const models: Record<string, string> = {
-        "llama3": "./llama.png",
-        "gpt4o": "./gpt.png",
+        "llama-3": "./llama.png",
+        "gpt-4o": "./gpt.png",
         "deepseek": "./deepseek.png",
-        "qwen3": "./qwen.png",
+        "qwen-3": "./qwen.png",
         "phi": "./phi.png",
         "gemma": "./gemma.png",
         "mistral": "./mistral.png",

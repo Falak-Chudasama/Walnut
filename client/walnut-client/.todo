@@ -1,6 +1,8 @@
-6. Also present <think> differently like dropdown
-7. Add every style into the tailwind.config.ts
-8. Also suggest prompts to make more.
-9. Set walnut mood and response length
-10. Improve animations
-11. Improve context and response quality
+V2
+- chat history
+- search capabilities -> https://developers.google.com/custom-search/v1/overview
+- Set walnut mood and response length
+- files as input capabilities
+- stt
+- load balancer of tokens
+- long term db
