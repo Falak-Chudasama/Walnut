@@ -1,0 +1,57 @@
+# --- Python basics ---
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+
+# --- Virtual environments ---
+venv/
+.env/
+.env.*  # e.g., .env.dev, .env.prod
+
+# --- VS Code and JetBrains IDEs ---
+.vscode/
+.idea/
+
+# --- OS-specific ---
+.DS_Store
+Thumbs.db
+
+# --- FastAPI logs/temp files ---
+*.log
+*.tmp
+
+# --- ChromaDB (local persistent vector store) ---
+chromadb/  # Or wherever you're storing persistent ChromaDB files
+
+# --- FAISS (if still using it in parallel or for comparison) ---
+*.index
+*.faiss
+metadata.json
+
+# --- Node (if any frontend exists) ---
+node_modules/
+dist/
+build/
+
+# --- Docker ---
+*.pid
+*.sock
+
+# --- Test artifacts ---
+htmlcov/
+.coverage
+.tox/
+nosetests.xml
+pytest_cache/
+
+# --- Database dumps (optional) ---
+*.sqlite3
+*.db
+*.bak
+
+# --- Miscellaneous ---
+*.swp
+*.bak
+*.orig
