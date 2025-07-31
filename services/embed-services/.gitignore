@@ -23,7 +23,7 @@ Thumbs.db
 *.tmp
 
 # --- ChromaDB (local persistent vector store) ---
-chromadb/  # Or wherever you're storing persistent ChromaDB files
+chromadb/
 
 # --- FAISS (if still using it in parallel or for comparison) ---
 *.index
