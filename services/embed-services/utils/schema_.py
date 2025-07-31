@@ -8,3 +8,6 @@ class EmbedRequest(BaseModel):
 class SearchRequest(BaseModel):
     query: str
     k: int = 5
+
+class DeleteRequest(BaseModel):
+    ids: List[str]
