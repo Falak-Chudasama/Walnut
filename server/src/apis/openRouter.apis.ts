@@ -14,15 +14,8 @@ const openai = new OpenAI({
 });
 
 
-async function openRouterAPI(prompt: string, model: string = 'qwen/qwen3-coder:free', needReasoning: boolean = false, temperature: number = 1, top_p: number = 1): Promise<object> {
+async function openRouterAPI(messages: object[], model: string = 'qwen/qwen3-coder:free', needReasoning: boolean = false, temperature: number = 1, top_p: number = 1): Promise<object> {
     try {
-        const messages = [
-            {
-                "role": "user",
-                "content": prompt
-            }
-        ];
-        
         const completion = await openai.chat.completions.create({
             messages,
             model,

@@ -16,15 +16,8 @@ const endpoint = "https://models.github.ai/inference";
 
 const client = ModelClient(endpoint, new AzureKeyCredential(token!));
 
-async function githubAPI(prompt: string, model: string = 'openai/gpt-4o', needReasoning: boolean = false, temperature: number = 1, top_p: number = 1): Promise<object> {
+async function githubAPI(messages: object[], model: string = 'openai/gpt-4o', needReasoning: boolean = false, temperature: number = 1, top_p: number = 1): Promise<object> {
     try {
-        const messages = [
-            {
-                "role": "user",
-                "content": prompt
-            }
-        ];
-
         const result = await client.path("/chat/completions").post({
             body: {
                 messages,

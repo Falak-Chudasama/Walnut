@@ -11,28 +11,19 @@ if (!API_KEY) throw new Error("Main API key for groq was not specified");
 const groq = new Groq({ apiKey: API_KEY });
 
 async function groqAPI(
-    prompt: string,
+    messages: object[],
     model: string = "llama-3.3-70b-versatile",
     needReasoning: boolean = false,
     temperature: number = 1,
     top_p: number = 1
 ): Promise<object> {
     try {
-        const messages = [
-            {
-                role: "user",
-                content: prompt,
-            },
-        ];
-
-        // Use non-streaming approach - more reliable
         const completion = await groq.chat.completions.create({
             messages,
             model,
             temperature,
             top_p,
             max_tokens: +process.env.MAX_ACCEPTED_TOKENS!,
-            // No stream property or stream: false
         });
 
         const content = completion.choices[0]?.message?.content || "";

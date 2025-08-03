@@ -8,6 +8,7 @@ const models: Record<string,Record<string,string>> = {
     },
     github: {
         "gpt-4o": "openai/gpt-4o",
+        "gpt-o4-mini": "openai/o4-mini",
         "gpt-4.1":"openai/gpt-4.1",
         "llama-4-scout": "meta/Llama-4-Scout-17B-16E-Instruct",
         "deepseek-v3": "deepseek/DeepSeek-V3-0324",

@@ -41,7 +41,7 @@ def embed_text(req: EmbedRequest):
     current_count = collection.count()
     ids = [f"item-{i}" for i in range(current_count, current_count + len(texts))]
     collection.add(documents=texts, metadatas=metadatas, ids=ids)
-    return {"message": f"{len(ids)} item(s) embedded successfully.", "ids": ids}
+    return {"message": f"{len(ids)} item(s) embedded successfully.", "ids": ids, "success": True}
 
 @app.post("/search")
 def search_text(req: SearchRequest):
