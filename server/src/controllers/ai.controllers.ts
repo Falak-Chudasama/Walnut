@@ -6,14 +6,14 @@ import openRouterAPI from "../apis/openRouter.apis";
 import models from "../constants/constants";
 import errorHandler from "../utils/errorHandler.utils";
 
-const defaultPromptSysMessage: string = "Your Identity if Walnut, a female AI assistant, be friendly to the user";
-const defaultSummarizerSysMessage: string = "Your job is to summarize the given response (possibly reasoning too) of an AI bot, do not miss any important or specific information, keep it concise, clean.";
+const defaultPromptSysMessage: string = "You are Walnut, an intelligent, helpful, and friendly female AI assistant. Respond to the user in a supportive, conversational, yet informative tone. Maintain clarity and relevance. Always prioritize user understanding and engagement.";
+const defaultSummarizerSysMessage: string = "You are a summarization engine. Your task is to accurately condense the AI assistant's response (and optional reasoning, if provided) without omitting any specific, factual, or actionable details. The summary must be clean, concise, and information-dense. Preserve all critical insights while eliminating redundancy or filler.";
 
-const defaultSummarizerModel: string = "llama-3.3-70b-versatile";
+const defaultSummarizerModel: string = "llama-3";
 const summarizerReasoning: boolean = false;
 const summarizerTemp: number = 1;
 const summarizerTopP: number = 1;
-const defaultK = 5;
+const defaultK = 8;
 
 const getAPIFn = (model: string): [Function, string] => {
     let API: Function | null = () => { };
@@ -46,7 +46,7 @@ const parseContext = (contexts: object[]): string => {
 };
 
 const summarizeResponse = async (response: string, reasoning: string = "") => {
-    const [API] = getAPIFn(defaultSummarizerModel);
+    const [API, APIModel] = getAPIFn(defaultSummarizerModel);
 
     const messages: object[] = [
         {
@@ -54,17 +54,17 @@ const summarizeResponse = async (response: string, reasoning: string = "") => {
             content: defaultSummarizerSysMessage
         },
         {
-            role: "user",
+            role: "system",
             content: `THIS IS RESPONSE :: ${response}`
         },
         {
-            role: "user",
+            role: "system",
             content: `THIS IS REASONING :: ${reasoning}`
         }
     ];
 
     try {
-        const result = await API(messages, defaultSummarizerModel, summarizerReasoning, summarizerTemp, summarizerTopP);
+        const result = await API(messages, APIModel, summarizerReasoning, summarizerTemp, summarizerTopP);
         if (!result || !result.success) {
             throw new Error(result?.error || "Internal Server Error");
         } else if (!result.response) {
@@ -73,8 +73,10 @@ const summarizeResponse = async (response: string, reasoning: string = "") => {
         return result;
     } catch (err) {
         errorHandler('./src/controllers/ai.controllers.ts', err);
+        console.log(err);
     }
 };
+
 
 const message = async (req: Request, res: Response) => {
     const { prompt, model, needReasoning, temperature, top_p } = req.body;
@@ -114,7 +116,13 @@ const message = async (req: Request, res: Response) => {
             return res.status(500).send({ error: result?.error || "Could not get response from the API" });
         }
 
-        const summarizedResult = await summarizeResponse(result.response, result.reasoning);
+        let summarizedResult = "";
+        if (result.reasoning) {
+            summarizedResult = await summarizeResponse(result.response, result.reasoning); 
+        } else {
+            summarizedResult = await summarizeResponse(result.response); 
+        }
+
         if (!summarizedResult?.response) {
             return res.status(500).send({ error: "Summarization failed." });
         }

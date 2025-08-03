@@ -1,7 +1,9 @@
 from fastapi import FastAPI, HTTPException
-from utils.schema_ import EmbedRequest, SearchRequest, DeleteRequest # Import DeleteRequest
+from utils.schema_ import EmbedRequest, SearchRequest, DeleteRequest
 import chromadb
 from chromadb.config import Settings
+
+# AVOID STORING DUPLICATE CONTENT
 
 app = FastAPI()
 

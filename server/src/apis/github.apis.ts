@@ -4,8 +4,6 @@ import dotenv from "dotenv";
 import errorHandler from "../utils/errorHandler.utils";
 import parseModelResponse from "../utils/handleReasoning.utils";
 
-// TODO: Do something for reasoning
-// TODO: Add model names into the constants
 dotenv.config({ quiet: true });
 
 const token = process.env.GITHUB_API_KEY || null;
@@ -24,7 +22,8 @@ async function githubAPI(messages: object[], model: string = 'openai/gpt-4o', ne
                 temperature,
                 top_p,
                 model,
-                max_tokens: +process.env.MAX_ACCEPTED_TOKENS!
+                max_tokens: +process.env.MAX_ACCEPTED_TOKENS!,
+                reasoning_effort: "low"
             }
         });
 
