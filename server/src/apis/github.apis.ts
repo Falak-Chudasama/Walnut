@@ -22,8 +22,7 @@ async function githubAPI(messages: object[], model: string = 'openai/gpt-4o', ne
                 temperature,
                 top_p,
                 model,
-                max_tokens: +process.env.MAX_ACCEPTED_TOKENS!,
-                reasoning_effort: "low"
+                max_tokens: +process.env.MAX_ACCEPTED_TOKENS!
             }
         });
 

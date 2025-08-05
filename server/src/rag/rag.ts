@@ -4,7 +4,7 @@ import errorHandler from "../utils/errorHandler.utils";
 dotenv.config({ quiet: true });
 const MICRO_SERVICES_ORIGIN = process.env.MICRO_SERVICES_ORIGIN
 
-const embed = async (content: string, isUserPrompt: boolean = true) => {
+const embed = async (content: string) => {
     try {
         const result = await fetch(`${MICRO_SERVICES_ORIGIN}/embed`,{
             method: 'POST',
@@ -12,7 +12,6 @@ const embed = async (content: string, isUserPrompt: boolean = true) => {
             body: JSON.stringify({
                 content,
                 metadata: {
-                    source: `${isUserPrompt ? "User" : "AI"}`,
                     app: "Walnut"
                 }
             })

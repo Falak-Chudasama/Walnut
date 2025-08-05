@@ -7,13 +7,14 @@ import models from "../constants/constants";
 import errorHandler from "../utils/errorHandler.utils";
 
 const defaultPromptSysMessage: string = "You are Walnut, an intelligent, helpful, and friendly female AI assistant. Respond to the user in a supportive, conversational, yet informative tone. Maintain clarity and relevance. Always prioritize user understanding and engagement.";
-const defaultSummarizerSysMessage: string = "You are a summarization engine. Your task is to accurately condense the AI assistant's response (and optional reasoning, if provided) without omitting any specific, factual, or actionable details. The summary must be clean, concise, and information-dense. Preserve all critical insights while eliminating redundancy or filler.";
+const defaultSummarizerSysMessage: string = "You are a summarization engine. Your task is to accurately condense the User's Prompt and AI assistant's response (and optional reasoning, if provided) without omitting any specific, factual, or actionable details. The summary must be clean, concise, and information-dense. Preserve all critical insights while eliminating redundancy or filler. Separate the summary into two halves (one for User response and another of AI response)";
 
 const defaultSummarizerModel: string = "llama-3";
 const summarizerReasoning: boolean = false;
 const summarizerTemp: number = 1;
 const summarizerTopP: number = 1;
-const defaultK = 8;
+const baseK = 3;
+const maxK = 12;
 
 const getAPIFn = (model: string): [Function, string] => {
     let API: Function | null = () => { };
@@ -45,13 +46,17 @@ const parseContext = (contexts: object[]): string => {
     return parsedContext.join('\n\n');
 };
 
-const summarizeResponse = async (response: string, reasoning: string = "") => {
+const summarizeConversation = async (prompt: string, response: string, reasoning: string = "") => {
     const [API, APIModel] = getAPIFn(defaultSummarizerModel);
 
     const messages: object[] = [
         {
             role: "system",
             content: defaultSummarizerSysMessage
+        },
+        {
+            role: "system",
+            content: `THIS IS USER's PROMPT :: ${prompt}`
         },
         {
             role: "system",
@@ -91,8 +96,9 @@ const message = async (req: Request, res: Response) => {
     }
 
     try {
-        const context = await search(prompt, defaultK);
-        await embed(prompt);
+        const dynamicK = Math.min(maxK, Math.ceil(prompt.length / 100) + baseK);
+
+        const context = await search(prompt, dynamicK);
 
         const messages: object[] = [
             {
@@ -118,16 +124,20 @@ const message = async (req: Request, res: Response) => {
 
         let summarizedResult = "";
         if (result.reasoning) {
-            summarizedResult = await summarizeResponse(result.response, result.reasoning); 
+            summarizedResult = await summarizeConversation(prompt, result.response, result.reasoning); 
         } else {
-            summarizedResult = await summarizeResponse(result.response); 
+            summarizedResult = await summarizeConversation(prompt, result.response); 
         }
 
         if (!summarizedResult?.response) {
             return res.status(500).send({ error: "Summarization failed." });
         }
 
-        await embed(summarizedResult.response, false);
+        const embeddedSumm = await embed(summarizedResult.response);
+
+        console.log('\n');
+        console.log('k: ' + dynamicK)
+        console.log(embeddedSumm);
 
         return res.status(200).send({ result, context });
     } catch (err) {
@@ -138,7 +148,7 @@ const message = async (req: Request, res: Response) => {
 
 export {
     message,
-    summarizeResponse,
+    summarizeConversation as summarizeResponse,
 };
 
 export default message
