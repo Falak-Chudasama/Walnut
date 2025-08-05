@@ -7,7 +7,7 @@ export default async function getResponse(
     prompt: string,
     model: string,
     needReasoning: boolean = false
-): Promise<{ response?: string; reasoning?: string; error?: string; success: boolean }> {
+): Promise<object> {
     try {
         const res = await fetch(`${constants.origin}/ai/`, {
             method: 'POST',
@@ -17,7 +17,7 @@ export default async function getResponse(
                 model,
                 needReasoning,
                 temperature,
-                top_p,
+                top_p
             }),
         });
 

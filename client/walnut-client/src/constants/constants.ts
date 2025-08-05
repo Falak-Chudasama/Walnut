@@ -1,5 +1,5 @@
 const constants = {
-    origin: "http://localhost:5000",
+    origin: "http://localhost:3050",
     defaultModel: "deepseek-r1",
     temperature: 0.5,
     top_p: 1,

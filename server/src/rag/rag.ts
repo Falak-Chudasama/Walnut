@@ -63,9 +63,30 @@ const search = async (query: string, k: number = 3) => {
     }
 };
 
+const clear = async () => {
+    try {
+            const result = await fetch(`${MICRO_SERVICES_ORIGIN}/delete-all`,{
+            method: 'DELETE',
+            headers: { 'Content-Type': 'application/json' },
+        });
+
+        if (!result.ok) {
+            throw new Error('Internal server error');
+        }
+
+        return {
+            success: true
+        }
+    } catch (err) {
+        errorHandler('./src/rag/rag.ts', err);
+        return { error: err, success: false }
+    }
+}
+
 export { 
     embed,
-    search
+    search,
+    clear
 };
 
 export default embed;

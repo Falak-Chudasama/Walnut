@@ -133,11 +133,7 @@ const message = async (req: Request, res: Response) => {
             return res.status(500).send({ error: "Summarization failed." });
         }
 
-        const embeddedSumm = await embed(summarizedResult.response);
-
-        console.log('\n');
-        console.log('k: ' + dynamicK)
-        console.log(embeddedSumm);
+        await embed(summarizedResult.response);
 
         return res.status(200).send({ result, context });
     } catch (err) {
