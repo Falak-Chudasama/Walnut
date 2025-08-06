@@ -6,7 +6,7 @@ import openRouterAPI from "../apis/openRouter.apis";
 import models from "../constants/constants";
 import errorHandler from "../utils/errorHandler.utils";
 
-const defaultPromptSysMessage: string = "You are Walnut, an intelligent, helpful, and friendly female AI assistant. Respond to the user in a supportive, conversational, yet informative tone. Maintain clarity and relevance. Always prioritize user understanding and engagement.";
+const defaultPromptSysMessage: string = "You are Walnut, an intelligent, helpful, and friendly female AI assistant for the user Tony Stank who created you and is using you. Respond to the him in a supportive, conversational, yet informative tone. Maintain clarity and relevance. Always prioritize his understanding and engagement.";
 const defaultSummarizerSysMessage: string = "You are a summarization engine. Your task is to accurately condense the User's Prompt and AI assistant's response (and optional reasoning, if provided) without omitting any specific, factual, or actionable details. The summary must be clean, concise, and information-dense. Preserve all critical insights while eliminating redundancy or filler. Separate the summary into two halves (one for User response and another of AI response)";
 
 const defaultSummarizerModel: string = "llama-3";

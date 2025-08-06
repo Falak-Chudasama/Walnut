@@ -1,5 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import { PromptCountContext, ModelContext } from "../context/context";
+import constants from "../constants/constants";
 
 function SwitchModel() {
     const [showModels, setShowModels] = useState(false);
@@ -7,14 +8,16 @@ function SwitchModel() {
     const { model, setModel } = useContext(ModelContext)!;
     const [modelOptions, setModelOptions] = useState([]);
 
-    const models: Record<string, string> = {
-        "llama-3": "./llama.png",
-        "gpt-4o": "./gpt.png",
-        "deepseek": "./deepseek.png",
-        "qwen-3": "./qwen.png",
-        "phi": "./phi.png",
-        "gemma": "./gemma.png",
-        "mistral": "./mistral.png",
+    const models: Record<string, string> = {}
+
+    for (let model in constants.groqModels) {
+        models[model] = "";
+    }
+    for (let model in constants.githubModels) {
+        models[model] = "";
+    }
+    for (let model in constants.openRouterModels) {
+        models[model] = "";
     }
 
     function getModelsOptions() {

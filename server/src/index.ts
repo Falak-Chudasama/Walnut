@@ -7,13 +7,14 @@ import { clear } from "./rag/rag";
 dotenv.config({ quiet: true });
 
 const PORT: number = Number(process.env.PORT) || 5000;
+const HOST: string = process.env.HOST || 'localhost';
 
 (async (): Promise<void> => {
     try {
         await connectDb();
         console.log('Successfuly connected to the database');
-        app.listen(PORT, async () => {
-            console.log(`Server is running at -> http://localhost:${PORT}`);
+        app.listen(PORT, HOST, async () => {
+            console.log(`Server is running at -> http://${HOST}:${PORT}`);
             await clear();
         });
     } catch (err) {
