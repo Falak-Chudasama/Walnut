@@ -12,7 +12,7 @@ function WalnutTitleLogo(shrinkSize: boolean) {
                     <span className="text-7xl text-walnut-dark font-pacifico">nut</span>
                 </h1>
             </div>
-            <h6 className={`text-xl text-walnut-accent text-center duration-500 ${shrinkSize ? "opacity-0" : "opacity-100"}`}>
+            <h6 className={`text-xl text-walnut-accent text-center font-medium duration-500 ${shrinkSize ? "opacity-0" : "opacity-100"}`}>
                 Let's <span className="text-walnut-dark">crack</span> a nut...
             </h6>
         </div>

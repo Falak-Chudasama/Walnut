@@ -5,6 +5,7 @@ function PromptField(getToBottom: boolean) {
     const { setPrompt } = useContext(PromptContext)!;
     const { promptCount, setPromptCount } = useContext(PromptCountContext)!;
     const [isFocused, setIsFocused] = useState(false);
+    const [buttonHovered, setButtonHovered] = useState(false);
     const inputRef = useRef<HTMLInputElement>(null);
 
     const submitInput = () => {
@@ -25,9 +26,7 @@ function PromptField(getToBottom: boolean) {
 
         if (inputElement) {
             const keyDownEvent = (event: KeyboardEvent) => {
-                if (event.key === "Shift" && event.shiftKey) {
-                    // new line 
-                } else if (event.key === "Enter") {
+                if (event.key === "Enter") {
                     submitInput();
                 }
             }
@@ -41,12 +40,15 @@ function PromptField(getToBottom: boolean) {
 
     return (
         <div className={`
+            scale-105
             fixed left-1/2 -translate-x-1/2 grid justify-center z-20
             transition-all duration-500 ease-in-out
             w-fit 
             bg-transparent rounded-full
             bg-cover bg-center
-            ${getToBottom ? 'bottom-8' : 'bottom-1/3'}
+            hover:shadow-lg
+            ${isFocused ? "shadow-lg" : "shadow-sm"}
+            ${getToBottom ? 'bottom-12' : 'bottom-1/3'}
         `}>
             <div className={`
             p-1
@@ -63,7 +65,7 @@ function PromptField(getToBottom: boolean) {
             <input
             ref={inputRef}
             type="text"
-            placeholder="Ask anything..."
+            placeholder="Ask her anything..."
             onChange={(e) => setPrompt(e.target.value)}
             onFocus={() => setIsFocused(true)}
             onBlur={() => setIsFocused(false)}
@@ -78,28 +80,33 @@ function PromptField(getToBottom: boolean) {
                 transition
                 duration-300
                 text-walnut-dark
-                font-bold
+                font-medium
                 placeholder:font-normal
-                placeholder:font-lato
+                placeholder:font-urbanist
                 ph-walnut
                 bg-transparent
-                font-lato
+                font-urbanist-light
             "
             />
-                <button onClick={() => submitInput()}
-                className="
+                <button 
+                onClick={() => submitInput()}
+                onMouseEnter={() => setButtonHovered(true)}
+                onMouseLeave={() => setButtonHovered(false)}
+                className={`
                     rounded-full
                     text-white
                     h-8
-                    px-5
+                    w-8
                     m-1
+                    flex items-center
+                    justify-center
                     bg-walnut-dark
                     hover:bg-walnut-darker
                     scale-100
                     duration-200
                     hover:cursor-pointer
-                    font-pacifico
-                    ">Send
+                    `}>
+                        <img src="./send-icon.png" alt="send icon" className={`h-4.5 w-auto duration-200 ${ buttonHovered ? "ml-1.5" : "ml-0" }`}/>
                 </button>
             </div>
         </div>

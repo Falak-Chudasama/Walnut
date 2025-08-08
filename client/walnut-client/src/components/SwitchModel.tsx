@@ -10,14 +10,8 @@ function SwitchModel() {
 
     const models: Record<string, string> = {}
 
-    for (let model in constants.groqModels) {
-        models[model] = "";
-    }
-    for (let model in constants.githubModels) {
-        models[model] = "";
-    }
-    for (let model in constants.openRouterModels) {
-        models[model] = "";
+    for (let model of constants.loadedModels) {
+        models[model[0]] = model[1];
     }
 
     function getModelsOptions() {
@@ -35,7 +29,7 @@ function SwitchModel() {
                     transition-all duration-500 ease-in-out
                     hover:bg-walnut-darker
                     ${showModels ? "translate-x-0" : "-translate-x-full"}
-                    flex items-center justify-between text-xl font-pacifico
+                    flex items-center justify-between text-xl font-urbanist
                     bg-walnut-dark rounded-tr-full rounded-br-full
                     min-w-30 w-fit p-2 text-walnut-pale
                     mb-1
@@ -67,7 +61,7 @@ function SwitchModel() {
                     -translate-x-20
                     group-hover:translate-x-0
                     ${showModels ? "translate-x-0" : "-translate-x-20"}
-                    flex items-center justify-between text-xl font-pacifico
+                    flex items-center justify-between text-xl font-urbanist
                     bg-walnut-dark rounded-tr-full rounded-br-full
                     min-w-30 w-fit p-2 text-walnut-pale
                     mb-3

@@ -1,9 +1,9 @@
-@import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Pacifico&display=swap');
+/* google fonts are loaded in html file */
 @import 'tailwindcss';
 
 @theme {
     --font-pacifico: "Pacifico";
-    --font-lato: "Lato";
+    --font-urbanist: "Urbanist";
     --font-weight-thin: 100;
     --font-weight-light: 300;
     --font-weight-regular: 400;
@@ -13,7 +13,7 @@
     --color-walnut-dark: #542B00;
     --color-walnut-darker: #3D2000;
     --color-walnut-accent: #D27E19;
-    --color-walnut-accent-darker: #A66013;
+    --color-walnut-accent-darker: #A7550D;
     --color-walnut-pale: #FFF5E8;
     --color-walnut-accent-40: rgba(255, 223, 181, 0.4);
 }

@@ -6,15 +6,16 @@ import openRouterAPI from "../apis/openRouter.apis";
 import models from "../constants/constants";
 import errorHandler from "../utils/errorHandler.utils";
 
-const defaultPromptSysMessage: string = "You are Walnut, an intelligent, helpful, and friendly female AI assistant for the user Tony Stank who created you and is using you. Respond to the him in a supportive, conversational, yet informative tone. Maintain clarity and relevance. Always prioritize his understanding and engagement.";
+const defaultPromptSysMessage: string = "You are Walnut, an intelligent, helpful, and friendly female AI assistant for the user Tony Stank who created you and is using you. Respond to the him in a supportive, conversational, yet informative tone, do not sound robotic. Maintain clarity and relevance. Always prioritize his understanding and engagement.";
 const defaultSummarizerSysMessage: string = "You are a summarization engine. Your task is to accurately condense the User's Prompt and AI assistant's response (and optional reasoning, if provided) without omitting any specific, factual, or actionable details. The summary must be clean, concise, and information-dense. Preserve all critical insights while eliminating redundancy or filler. Separate the summary into two halves (one for User response and another of AI response)";
 
-const defaultSummarizerModel: string = "llama-3";
+const defaultSummarizerModel: string = "llama-4-maverick";
 const summarizerReasoning: boolean = false;
 const summarizerTemp: number = 1;
 const summarizerTopP: number = 1;
 const baseK = 3;
 const maxK = 12;
+let prevResponse = "";
 
 const getAPIFn = (model: string): [Function, string] => {
     let API: Function | null = () => { };
@@ -107,6 +108,10 @@ const message = async (req: Request, res: Response) => {
             },
             {
                 role: "system",
+                content: prevResponse
+            },
+            {
+                role: "system",
                 content: parseContext(context.results)
             },
             {
@@ -135,6 +140,7 @@ const message = async (req: Request, res: Response) => {
 
         await embed(summarizedResult.response);
 
+        prevResponse = `YOUR PREVIOUS RESPONSE : ${result.response}`;
         return res.status(200).send({ result, context });
     } catch (err) {
         errorHandler('./src/controllers/ai.controllers.ts', err);

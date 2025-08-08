@@ -7,6 +7,8 @@ const models: Record<string,Record<string,string>> = {
         "kimi": "moonshotai/kimi-k2-instruct",
     },
     github: {
+        "gpt-5":"openai/gpt-5",
+        "gpt-5-mini":"openai/gpt-5-mini",
         "gpt-4o": "openai/gpt-4o",
         "gpt-4o-mini": "openai/gpt-4o-mini",
         "gpt-4.1": "openai/gpt-4.1",
