@@ -129,7 +129,7 @@ function Chat() {
                 className="
                     font-urbanist font-medium p-3 px-5
                     bg-walnut-accent-darker text-white rounded-4xl break-words 
-                    transition-all duration-300 fly-up
+                    transition-all duration-300 shadow-md
                 "
             >
                 <ReactMarkdown>{prompt}</ReactMarkdown>
@@ -175,7 +175,7 @@ function Chat() {
     );
 
     return promptCount !== 0 ? (
-        <div className="w-[calc(100vw-16rem)] h-[calc(85vh)] mx-[8rem] mt-[15vh] relative">
+        <div className="w-[calc(100vw-18rem)] h-[calc(85vh)] mx-[9rem] mt-[15vh] relative">
             <div
                 ref={scrollRef}
                 className="h-full overflow-y-auto overflow-x-hidden [overflow-anchor:none]"
@@ -190,7 +190,7 @@ function Chat() {
                     }
                 `}</style>
 
-                <div className="chat-container space-y-4 mb-36">
+                <div className="chat-container space-y-4 mb-36 text-lg">
                     {messages.map((message, index) => (
                         <div key={index} className="w-full flex">
                             {message.type === "prompt"

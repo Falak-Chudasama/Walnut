@@ -3,6 +3,29 @@ import constants from "../constants/constants";
 const temperature = constants.temperature;
 const top_p = constants.top_p;
 
+export async function forgetContext(): Promise<object> {
+    try {
+        const response = await fetch(`${constants.origin}/ai/forget-context/`, {
+            method: 'DELETE',
+            headers: { 'Content-Type': 'application/json' }
+        });
+
+        if (!response.ok) throw new Error(`Main AI API error: ${response.status}`);
+
+        const data = await response.json();
+
+        console.log(data);
+
+        return data;
+    } catch(err) {
+        console.error("Failed to clear the context:", err);
+        return {
+            error: `Failed to fetch AI response: ${err.message || String(err)}`,
+            success: false
+        };
+    }
+}
+
 export default async function getResponse(
     prompt: string,
     model: string,

@@ -1,5 +1,6 @@
 import { useContext } from "react";
 import { PromptCountContext } from "../context/context";
+import { forgetContext } from "../apis/apis";
 
 function NewChat() {
     const { promptCount, setPromptCount } = useContext(PromptCountContext)!;
@@ -9,7 +10,8 @@ function NewChat() {
             <div
                 onClick={() => {
                     setTimeout(() => {
-                        setPromptCount(0)
+                        setPromptCount(0);
+                        forgetContext();
                     }, 100);
                 }}
                 className={`

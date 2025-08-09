@@ -3,7 +3,7 @@ from utils.schema_ import EmbedRequest, SearchRequest, DeleteRequest
 import chromadb
 from chromadb.config import Settings
 
-# AVOID STORING DUPLICATE CONTENT
+# RUN: python -m uvicorn app:app --reload --host 127.0.0.1 --port 3052
 
 app = FastAPI()
 

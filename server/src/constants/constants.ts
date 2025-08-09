@@ -5,6 +5,8 @@ const models: Record<string,Record<string,string>> = {
         "deepseek-r1": 'deepseek-r1-distill-llama-70b',
         "playai": "playai-tts",
         "kimi": "moonshotai/kimi-k2-instruct",
+        "gpt-oss": "openai/gpt-oss-120b",
+        "qwen-3-small": "qwen/qwen3-32b"
     },
     github: {
         "gpt-5":"openai/gpt-5",
@@ -20,7 +22,9 @@ const models: Record<string,Record<string,string>> = {
     },
     openRouter: {
         "qwen-3": "qwen/qwen3-235b-a22b:free",
-        "gemini-2.0": "google/gemini-2.0-flash-exp:free"
+        "gemini-2.0": "google/gemini-2.0-flash-exp:free",
+        "gpt-oss-small": "openai/gpt-oss-20b:free",
+        "llama-nemotron":"nvidia/llama-3.1-nemotron-ultra-253b-v1:free"
     }
 }
 
