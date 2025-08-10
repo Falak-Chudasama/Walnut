@@ -59,7 +59,7 @@ function SwitchModel() {
                     cursor-pointer
                     transition-all duration-500 ease-in-out
                     hover:translate-x-0
-                    ${showModels ? "translate-x-0" : "-translate-x-20"}
+                    ${showModels ? "translate-x-0" : "-translate-x-[calc(100%-3rem)]"}
                     flex items-center justify-between text-xl font-urbanist
                     bg-walnut-dark rounded-tr-full rounded-br-full
                     min-w-30 w-fit p-2 text-walnut-pale

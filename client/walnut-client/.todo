@@ -1,10 +1,8 @@
 V1
-- add api to reset the chat after clicking the new chat button to make the model forget all the context
-- fix Chat.jsx (scrolling and fading of content on the edge)
-- fix the hover exposure of the model options
-- fix the buttons below prompts and responses
-- fix the handling of errors in the backend and show em to the frontend
 - fix chat refreshing, put em all in session storage.
+- fix the buttons below prompts and responses
+- fix Chat.jsx (scrolling and fading of content on the edge)
+- fix the handling of errors in the backend and show em to the frontend
 - add TTS functionality
 - add loading functionality
 

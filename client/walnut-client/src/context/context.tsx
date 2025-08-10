@@ -1,17 +1,12 @@
 import React, { createContext, useState, type ReactNode } from "react";
 import constants from "../constants/constants";
-import type { PromptContextType, ModelContextType, PromptCountType, MemoryContextType } from "../types/types";
-
-const preloadedMemory: string = `
-You're Walnut, human-like, multimodal AI assistant.
-You'll share this only when relevant.
-`
+import type { PromptContextType, ModelContextType, PromptCountType, MessageType } from "../types/types";
 
 // Contexts
 export const PromptContext = createContext<PromptContextType | null>(null);
 export const ModelContext = createContext<ModelContextType | null>(null);
 export const PromptCountContext = createContext<PromptCountType | null>(null);
-export const MemoryContext = createContext<MemoryContextType | null>(null);
+export const MessageContext = createContext<{ messages: MessageType[], setMessages: (val: MessageType) => void } | null>(null);
 
 // Providers
 const PromptProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
@@ -44,16 +39,16 @@ const PromptCountProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     );
 };
 
-const MemoryProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-    let [memory, setMemory] = useState(preloadedMemory);
+const MessageContextProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+    const [messages, setMessages] = useState([]);
 
     return (
-        <MemoryContext.Provider value={{ memory, setMemory }}>
+        <MessageContext.Provider value={{ messages, setMessages }}>
             {children}
-        </MemoryContext.Provider>
+        </MessageContext.Provider>
     );
-}
+};
 
 
-const providers = [PromptProvider, ModelProvider, PromptCountProvider, MemoryProvider];
+const providers = [PromptProvider, ModelProvider, PromptCountProvider, MessageContextProvider];
 export default providers;

@@ -6,16 +6,12 @@ import {
     PromptContext,
     ModelContext,
     PromptCountContext,
+    MessageContext
 } from "../context/context";
 
-interface Message {
-    type: "prompt" | "response";
-    content: string;
-    isAnimating?: boolean;
-}
 
 function Chat() {
-    const [messages, setMessages] = useState<Message[]>([]);
+    const { messages, setMessages }= useContext(MessageContext);
     const [currentResponse, setCurrentResponse] = useState("");
     const { prompt } = useContext(PromptContext)!;
     const { promptCount } = useContext(PromptCountContext)!;
