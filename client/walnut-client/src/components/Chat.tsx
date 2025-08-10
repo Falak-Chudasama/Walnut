@@ -159,12 +159,6 @@ function Chat() {
 
             <div className="flex space-x-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                 <button
-                    className="cursor-pointer h-5 w-5 ml-2 hover:brightness-50 duration-200 hover:scale-115"
-                >
-                    <img src="./speak-aloud-icon.png" alt="Speak" />
-                </button>
-
-                <button
                     className="cursor-pointer w-4 p-3 ml-2 rounded-md hover:brightness-50 hover:bg-walnut-accent-40 duration-200"
                     onClick={() => copyToClipboard(response)}
                 >

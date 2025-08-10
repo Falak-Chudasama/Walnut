@@ -1,12 +1,11 @@
 V1
-- fix chat refreshing, put em all in session storage.
 - fix the buttons below prompts and responses
 - fix Chat.jsx (scrolling and fading of content on the edge)
+
+V2
 - fix the handling of errors in the backend and show em to the frontend
 - add TTS functionality
 - add loading functionality
-
-V2
 - chat history
 - search capabilities -> https://developers.google.com/custom-search/v1/overview
 - Set walnut mood and response length
