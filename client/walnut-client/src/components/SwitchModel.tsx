@@ -7,6 +7,7 @@ function SwitchModel() {
     const { promptCount } = useContext(PromptCountContext)!;
     const { model, setModel } = useContext(ModelContext)!;
     const [modelOptions, setModelOptions] = useState([]);
+    const [hovered, setHovered] = useState(false);
 
     const models: Record<string, string> = {}
 
@@ -33,7 +34,7 @@ function SwitchModel() {
                         bg-walnut-dark rounded-tr-full rounded-br-full
                         min-w-30 w-fit p-2 text-walnut-pale
                         mb-1 shadow-md
-                        hover:bg-walnut-darker
+                        hover:bg-walnut-darker z-15
                     `}
                 >
                     {currModel}
@@ -52,7 +53,7 @@ function SwitchModel() {
     }, [model, showModels]);
 
     return (
-        <div className={`absolute ${promptCount === 0 ? "top-[20%]" : "top-[30%]"} duration-500 left-0 w-max h-max z-50`}>
+        <div className={`absolute ${promptCount === 0 ? "top-[20%]" : "top-[30%]"} duration-500 left-0 ${ hovered ? "w-max" : "w-fit" } h-max z-5`}>
             <div
                 onClick={() => setShowModels(!showModels)}
                 className={`
@@ -63,11 +64,14 @@ function SwitchModel() {
                     flex items-center justify-between text-xl font-urbanist
                     bg-walnut-dark rounded-tr-full rounded-br-full
                     min-w-30 w-fit p-2 text-walnut-pale
-                    mb-3 shadow-md hover:bg-walnut-darker
+                    mb-3 shadow-md hover:bg-walnut-darker z-15
                 `}
             >
                 {model}
-                <div className="rounded-full bg-walnut-pale h-7 w-7 ml-4 flex items-center justify-center hover:scale-110 duration-200">
+                <div className="rounded-full bg-walnut-pale h-7 w-7 ml-4 flex items-center justify-center hover:scale-110 duration-200"
+                    onMouseEnter={() => setHovered(true)}
+                    onMouseLeave={() => setHovered(false)}
+                >
                     <img className="h-4.5 w-auto" src={`${models[model]}`} alt="model logo" />
                 </div>
             </div>

@@ -6,12 +6,11 @@ import {
     PromptContext,
     ModelContext,
     PromptCountContext,
-    MessageContext
+    MessageContext,
 } from "../context/context";
 
-
 function Chat() {
-    const { messages, setMessages }= useContext(MessageContext);
+    const { messages, setMessages } = useContext(MessageContext);
     const [currentResponse, setCurrentResponse] = useState("");
     const { prompt } = useContext(PromptContext)!;
     const { promptCount } = useContext(PromptCountContext)!;
@@ -21,7 +20,7 @@ function Chat() {
     const messagesEndRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
-        forgetContext()
+        forgetContext();
     }, []);
 
     useEffect(() => {
@@ -135,41 +134,60 @@ function Chat() {
                 <ReactMarkdown remarkPlugins={[remarkGfm]}>{prompt}</ReactMarkdown>
             </div>
 
-            <button
-                title="Copy prompt"
-                onClick={() => copyToClipboard(prompt)}
-                className="
-                    opacity-0 group-hover:opacity-100 
-                    transition-opacity duration-300 cursor-pointer
-                    hover:brightness-75
-                "
-            >
-                <img
-                    src="./copy-text-accent-icon.png"
-                    alt="Copy"
-                    className="h-4 w-auto mr-3 mt-1 duration-200 hover:scale-115"
-                />
-            </button>
+            <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 mr-5">
+                <button
+                    title="Copy prompt"
+                    onClick={() => copyToClipboard(prompt)}
+                    className="
+                        cursor-pointer p-1 rounded-md 
+                        hover:brightness-75 hover:bg-walnut-accent-40
+                        duration-200 flex items-center space-x-1
+                    "
+                >
+                    <img
+                        src="./copy-text-accent-icon.png"
+                        alt="Copy"
+                        className="h-4 w-4"
+                    />
+                </button>
+            </div>
         </div>
     );
 
     const createResponseDiv = (response: string): JSX.Element => (
-        <div className="group mr-auto p-3 font-medium text-walnut-dark max-w-[100%] break-words space-y-2 relative">
-            <ReactMarkdown remarkPlugins={[remarkGfm]}>{response}</ReactMarkdown>
+        <div className="group flex flex-col items-start max-w-[100%] mr-auto h-max space-y-1">
+            <div
+                className="
+                    font-urbanist font-medium p-3 px-5
+                    text-walnut-dark bg-walnut-accent-100 rounded-4xl break-words 
+                    transition-all duration-300 
+                "
+            >
+                <ReactMarkdown remarkPlugins={[remarkGfm]}>{response}</ReactMarkdown>
+            </div>
 
-            <div className="flex space-x-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+            <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 ml-5">
                 <button
-                    className="cursor-pointer w-4 p-3 ml-2 rounded-md hover:brightness-50 hover:bg-walnut-accent-40 duration-200"
+                    title="Copy response"
                     onClick={() => copyToClipboard(response)}
+                    className="
+                        cursor-pointer p-1 rounded-md 
+                        hover:brightness-75 hover:bg-walnut-accent-40
+                        duration-200 flex items-center space-x-1
+                    "
                 >
-                    <img src="./copy-text-icon.png" alt="Copy" />
+                    <img
+                        src="./copy-text-icon.png"
+                        alt="Copy"
+                        className="h-4 w-4"
+                    />
                 </button>
             </div>
         </div>
     );
 
     return promptCount !== 0 ? (
-        <div className="w-[calc(100vw-18rem)] h-[calc(85vh)] mx-[9rem] mt-[15vh] relative">
+        <div className="w-[calc(100vw-18rem)] h-[calc(85vh)] mx-[9rem] mt-[15vh] relative z-10">
             <div
                 ref={scrollRef}
                 className="h-full overflow-y-auto overflow-x-hidden [overflow-anchor:none]"
