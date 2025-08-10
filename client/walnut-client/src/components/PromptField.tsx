@@ -59,7 +59,7 @@ function PromptField(getToBottom: boolean) {
             border-walnut-dark
             border-3
             backdrop-blur-[2.3px]
-            ${isFocused ? 'w-2xl' : 'w-xl'} 
+            ${isFocused ? 'w-2xl' : 'w-lg'} 
             hover:w-2xl
             `}>
             <input

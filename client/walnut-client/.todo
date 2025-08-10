@@ -7,7 +7,6 @@ V1
 - fix chat refreshing, put em all in session storage.
 - add TTS functionality
 - add loading functionality
-- add icons of models in public folder
 
 V2
 - chat history

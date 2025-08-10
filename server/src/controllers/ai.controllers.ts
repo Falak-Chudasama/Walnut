@@ -108,11 +108,15 @@ const message = async (req: Request, res: Response) => {
             },
             {
                 role: "system",
-                content: prevResponse
+                content: `Greet the user only if the following is empty, else you continue the conversation: ${prevResponse}`
             },
             {
                 role: "system",
-                content: parseContext(context.results)
+                content: `${parseContext(context.results)}`
+            },
+            {
+                role: "system",
+                content: `This is the present time: ${new Date()}`
             },
             {
                 role: "user",

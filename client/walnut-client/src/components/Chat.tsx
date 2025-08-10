@@ -1,6 +1,7 @@
 import { useContext, useState, useEffect, useRef, type JSX } from "react";
 import ReactMarkdown from "react-markdown";
-import getResponse from "../apis/apis";
+import remarkGfm from "remark-gfm";
+import getResponse, { forgetContext } from "../apis/apis";
 import {
     PromptContext,
     ModelContext,
@@ -24,10 +25,13 @@ function Chat() {
     const messagesEndRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
+        forgetContext()
+    }, []);
+
+    useEffect(() => {
         if (promptCount === 0) setMessages([]);
     }, [promptCount]);
 
-    // Auto-scroll to bottom
     useEffect(() => {
         if (scrollRef.current) {
             requestAnimationFrame(() => {
@@ -132,7 +136,7 @@ function Chat() {
                     transition-all duration-300 shadow-md
                 "
             >
-                <ReactMarkdown>{prompt}</ReactMarkdown>
+                <ReactMarkdown remarkPlugins={[remarkGfm]}>{prompt}</ReactMarkdown>
             </div>
 
             <button
@@ -155,7 +159,7 @@ function Chat() {
 
     const createResponseDiv = (response: string): JSX.Element => (
         <div className="group mr-auto p-3 font-medium text-walnut-dark max-w-[100%] break-words space-y-2 relative">
-            <ReactMarkdown>{response}</ReactMarkdown>
+            <ReactMarkdown remarkPlugins={[remarkGfm]}>{response}</ReactMarkdown>
 
             <div className="flex space-x-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                 <button

@@ -5,11 +5,11 @@ const constants = {
     temperature: 0.5,
     top_p: 1,
     groqModels: [
+        "gpt-oss",
         "llama-3",
         "llama-4-maverick",
         "deepseek-r1",
         "kimi",
-        "gpt-oss",
         "qwen-3-small",
         "playai"
     ],
@@ -32,11 +32,11 @@ const constants = {
         "llama-nemotron"
     ],
     loadedModels: [
-        ["gpt-4o", "./gpt.png"],
         ["gpt-oss", "./gpt.png"],
         ["llama-nemotron", "./llama.png"],
-        ["grok-3", "./grok.png"],
         ["deepseek-r1", "./deepseek.png"],
+        ["grok-3", "./grok.png"],
+        ["qwen-3", "./qwen.png"]
     ]
 };
 export default constants;
