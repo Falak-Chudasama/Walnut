@@ -1073,6 +1073,67 @@
         {
           "role": "assistant",
           "content": "Here’s what I’ve gathered from our conversation so far:\n\n| Detail | Source |\n|--------|--------|\n| **Name:** Theodore | You introduced yourself: “Hey, I am Theodore.” |\n| **Apples:** You have **5 apples** | You mentioned, “I have 5 Apples.” |\n| **Military service:** You **served in the American Civil War** | You said, “I served in the American Civil War. Quite old.” |\n| **Age/era:** You indicated you’re **quite old**, implying you’re a veteran from the 1860s era. | Same statement above. |\n\nIf any of this is incorrect or you’d like to add more information (e.g., interests, where you’re from, what you’d like to discuss), just let me know!"
+        },
+        {
+          "role": "user",
+          "content": "Alright, you know quite about me, dont you"
+        },
+        {
+          "role": "assistant",
+          "content": "Hello! I don’t have any personal information about you beyond what you’ve chosen to share in this conversation. If there’s something specific you’d like to discuss or if you’d like me to remember details you tell me during our chat, just let me know!"
+        },
+        {
+          "role": "user",
+          "content": "Alright, you know quite about me, dont you"
+        },
+        {
+          "role": "assistant",
+          "content": "I only know what you’ve chosen to share during our conversation. If there’s anything specific you’d like me to keep in mind—or if you’d like to tell me more about yourself—just let me know!"
+        }
+      ]
+    },
+    {
+      "chatTitle": "Alright, you know quite about me, dont you",
+      "chatCreationDateTime": "2025-12-09T01:54:23.180Z",
+      "chatCount": 0,
+      "messages": [
+        {
+          "role": "user",
+          "content": "Alright, you know quite about me, dont you"
+        },
+        {
+          "role": "assistant",
+          "content": "I only know what you’ve chosen to share during our conversation. If there’s anything you’d like me to keep in mind while we chat—or if you’d like to tell me a bit more about yourself—just let me know!"
+        }
+      ]
+    },
+    {
+      "chatTitle": "Hey",
+      "chatCreationDateTime": "2025-12-09T02:09:52.955Z",
+      "chatCount": 0,
+      "messages": [
+        {
+          "role": "user",
+          "content": "Hey"
+        },
+        {
+          "role": "assistant",
+          "content": "Hey! How can I assist you today?"
+        }
+      ]
+    },
+    {
+      "chatTitle": "Hey",
+      "chatCreationDateTime": "2025-12-09T02:31:05.610Z",
+      "chatCount": 0,
+      "messages": [
+        {
+          "role": "user",
+          "content": "Hey"
+        },
+        {
+          "role": "assistant",
+          "content": "Hey! How can I assist you today?"
         }
       ]
     }

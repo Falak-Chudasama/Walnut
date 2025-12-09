@@ -1,4 +1,8 @@
-import { useState, useEffect, useRef } from "react";
+// src/components/SideButtons.tsx
+import { useState, useEffect, useRef, useContext } from "react";
+import { ChatMetaContext } from "../context/ChatMetaContext";
+import { PromptContext, PromptCountContext, MessageContext } from "../context/context";
+import constants from "../constants/constants";
 
 type ChatItem = {
     _id: string;
@@ -14,9 +18,15 @@ function ChatMenu() {
     const [chats, setChats] = useState<ChatItem[]>([]);
     const [cursor, setCursor] = useState<string | null>(null);
     const [hasMore, setHasMore] = useState(true);
+
     const scrollRef = useRef<HTMLDivElement | null>(null);
     const isFetchingRef = useRef(false);
     const tickingRef = useRef(false);
+
+    const { setChatTitle, setChatCreationDateTime } = useContext(ChatMetaContext);
+    const { setPrompt } = useContext(PromptContext)!;
+    const { setPromptCount } = useContext(PromptCountContext)!;
+    const { messages, setMessages } = useContext(MessageContext)!;
 
     const toISTDate = (timestamp: string | Date) => {
         const d = new Date(timestamp);
@@ -53,21 +63,36 @@ function ChatMenu() {
         try {
             isFetchingRef.current = true;
 
-            // Simulating API call with sample data
-            await new Promise(resolve => setTimeout(resolve, 500));
-            
-            const sampleChats: ChatItem[] = [
-                { _id: "1", title: "Introduction to React Hooks", createdAt: new Date().toISOString(), messageCount: 5 },
-                { _id: "2", title: "Building a Chat Interface", createdAt: new Date().toISOString(), messageCount: 8 },
-                { _id: "3", title: "State Management Patterns", createdAt: new Date(Date.now() - 86400000).toISOString(), messageCount: 3 },
-                { _id: "4", title: "API Integration Best Practices", createdAt: new Date(Date.now() - 86400000).toISOString(), messageCount: 6 },
-                { _id: "5", title: "TypeScript Tips & Tricks", createdAt: new Date(Date.now() - 172800000).toISOString(), messageCount: 4 },
-            ];
+            // NOTE: correct endpoint is /ai/chats as served by your backend router
+            const res = await fetch(`${constants.origin}/ai/chats`);
+            if (!res.ok) {
+                throw new Error(`Server returned ${res.status}`);
+            }
+            const data = await res.json();
+
+            // backend returns { success: true, result: [ ...chats ] }
+            const raw = data?.result ?? [];
+
+            const normalized: ChatItem[] = raw.map((c: any) => ({
+                _id: c.chatCreationDateTime,
+                title: c.chatTitle,
+                createdAt: c.chatCreationDateTime,
+                messages: c.messages ?? [],
+                messageCount: (c.messages ?? []).length
+            }));
+
+            // sort newest -> oldest before grouping so "Today" appears first
+            const sorted = [...normalized].sort(
+                (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+            );
 
             if (cursor === null) {
-                setChats(sampleChats);
+                setChats(sorted);
                 setCursor("page2");
                 setHasMore(false);
+            } else {
+                // If you later want paging, append sorted
+                setChats(prev => [...prev, ...sorted]);
             }
         } catch (err) {
             console.error("fetchChatBatch error:", err);
@@ -77,6 +102,7 @@ function ChatMenu() {
     };
 
     const grouped = (() => {
+        // building groups from a sorted array preserves group insertion order (newest first)
         const groups: Record<string, typeof chats> = {};
         for (const chat of chats) {
             const key = ddmm(chat.createdAt);
@@ -87,8 +113,18 @@ function ChatMenu() {
     })();
 
     const handleChatClick = async (id: string) => {
-        console.log("Chat clicked:", id);
-        // In real app: fetch chat details and update active chat
+        const selected = chats.find((c) => c._id === id);
+        if (!selected) return;
+
+        setChatTitle(selected.title);
+        setChatCreationDateTime(selected.createdAt);
+
+        sessionStorage.setItem("chatTitle", selected.title);
+        sessionStorage.setItem("chatCreationDateTime", selected.createdAt);
+
+        setMessages(selected.messages || []);
+        setPrompt("");
+        setPromptCount(selected.messages?.length || 0);
     };
 
     useEffect(() => {
@@ -138,7 +174,7 @@ function ChatMenu() {
                                 onClick={() => handleChatClick(chat._id)}
                                 key={chat._id}
                                 className="duration-200 cursor-pointer rounded-tr-full rounded-br-full p-1 pl-5 pr-2 whitespace-nowrap overflow-hidden text-ellipsis"
-                                style={{ 
+                                style={{
                                     color: 'var(--walnut-darker)',
                                     transition: 'all 0.2s ease'
                                 }}
@@ -172,9 +208,20 @@ function SideButtons() {
     const [isExpanded, setIsExpanded] = useState(false);
     const [chatsHover, setChatsHover] = useState(false);
 
+    const { setChatTitle, setChatCreationDateTime } = useContext(ChatMetaContext);
+    const { setPrompt } = useContext(PromptContext)!;
+    const { setPromptCount } = useContext(PromptCountContext)!;
+    const { setMessages } = useContext(MessageContext)!;
+
     const handleNewChatBtn = () => {
-        console.log("New chat clicked");
-        // Reset all chat state
+        setChatTitle("");
+        setChatCreationDateTime("");
+        setPrompt("");
+        setPromptCount(0);
+        setMessages([]);
+
+        sessionStorage.removeItem("chatTitle");
+        sessionStorage.removeItem("chatCreationDateTime");
     };
 
     const handleExpandSideBarBtn = () => {
@@ -190,7 +237,7 @@ function SideButtons() {
         hover:translate-x-0 flex items-center justify-between text-xl font-semibold rounded-tr-full rounded-br-full
         w-fit pl-2 p-1.25 mb-3
     `;
-    
+
     const containerClassBaseStyle = {
         backgroundColor: 'var(--walnut-pale)'
     };
@@ -200,7 +247,7 @@ function SideButtons() {
         hover:translate-x-0 flex items-center justify-between text-xl font-semibold rounded-tr-full rounded-br-full
         w-fit p-1.25 mb-3
     `;
-    
+
     const containerClassStyle = {
         backgroundColor: 'var(--walnut-dark)'
     };

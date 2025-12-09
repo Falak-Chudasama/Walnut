@@ -65,10 +65,6 @@ const writeChats = (data: any) => {
 export const message = async (req: Request, res: Response) => {
     const { prompt, model, chatTitle, chatCreationDateTime, chatCount, needReasoning, temperature, top_p } = req.body;
 
-    console.log(chatCount); // delit
-    console.log(chatTitle); // delit
-    console.log(chatCreationDateTime); // delit
-
     if (!prompt) return res.status(422).send({ error: "No prompt was given" });
     if (!model) return res.status(422).send({ error: "No model name was given" });
 
@@ -131,7 +127,7 @@ export const message = async (req: Request, res: Response) => {
         );
 
         if (!existing) {
-            finalChatTitle = "Chat " + Date.now();
+            finalChatTitle = prompt.trim().substring(0, 60);
             finalChatCreationDateTime = new Date().toISOString();
             data.chats.push({
                 chatTitle: finalChatTitle,
@@ -160,6 +156,29 @@ export const message = async (req: Request, res: Response) => {
     } catch (err) {
         errorHandler("./src/controllers/ai.controllers.ts", err);
         return res.status(500).send({ error: "Unhandled backend error" });
+    }
+};
+
+export const getChats = async (req: Request, res: Response) => {
+    try {
+        const data = readChats();
+        return res.status(200).send({ success: true, result: data.chats ?? [] });
+    } catch (err) {
+        errorHandler("./src/controllers/ai.controllers.ts", err);
+        return res.status(500).send({ success: false, error: "Failed to read chats" });
+    }
+};
+
+export const getChatById = async (req: Request, res: Response) => {
+    try {
+        const id = req.params.id;
+        const data = readChats();
+        const chat = data.chats.find((c: any) => c.chatCreationDateTime === id || c.chatTitle === id);
+        if (!chat) return res.status(404).send({ success: false, error: "Chat not found" });
+        return res.status(200).send({ success: true, result: chat });
+    } catch (err) {
+        errorHandler("./src/controllers/ai.controllers.ts", err);
+        return res.status(500).send({ success: false, error: "Failed to read chat" });
     }
 };
 

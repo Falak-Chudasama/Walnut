@@ -38,7 +38,6 @@ function Chat() {
 
     async function responseAnimation(response: string): Promise<void> {
         let currResponse = "";
-
         setMessages((prev) => [
             ...prev,
             { type: "response", content: "", isAnimating: true },
@@ -159,7 +158,6 @@ function Chat() {
             <div className="font-urbanist font-medium p-3 px-5 bg-walnut-accent-darker text-white rounded-4xl break-words transition-all duration-300 shadow-md">
                 <ReactMarkdown remarkPlugins={[remarkGfm]}>{prompt}</ReactMarkdown>
             </div>
-
             <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 mr-5">
                 <button
                     title="Copy prompt"
@@ -177,7 +175,6 @@ function Chat() {
             <div className="font-urbanist font-medium p-3 px-5 text-walnut-dark bg-walnut-accent-100 rounded-4xl break-words transition-all duration-300">
                 <ReactMarkdown remarkPlugins={[remarkGfm]}>{response}</ReactMarkdown>
             </div>
-
             <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 ml-5">
                 <button
                     title="Copy response"
@@ -197,13 +194,23 @@ function Chat() {
                 className="h-full overflow-y-auto overflow-x-hidden no-scrollbar"
             >
                 <div className="chat-container space-y-4 mb-36 text-lg">
-                    {messages.map((message, index) => (
-                        <div key={index} className="w-full flex">
-                            {message.type === "prompt"
-                                ? createPromptDiv(message.content)
-                                : createResponseDiv(message.content)}
-                        </div>
-                    ))}
+                    {messages.map((message, index) => {
+                        const isPrompt =
+                            message.type === "prompt" ||
+                            message.role === "user";
+
+                        const isResponse =
+                            message.type === "response" ||
+                            message.role === "assistant";
+
+                        return (
+                            <div key={index} className="w-full flex">
+                                {isPrompt
+                                    ? createPromptDiv(message.content)
+                                    : createResponseDiv(message.content)}
+                            </div>
+                        );
+                    })}
                     <div ref={messagesEndRef} />
                 </div>
             </div>
