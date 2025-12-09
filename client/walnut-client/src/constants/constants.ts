@@ -1,6 +1,6 @@
 const constants = {
     appVersion: "1.0.0",
-    origin: "http://127.0.0.1:3050",
+    origin: "https://walnut.onrender.com",
     defaultModel: "gpt-oss",
     temperature: 0.5,
     top_p: 1,
