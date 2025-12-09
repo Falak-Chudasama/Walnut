@@ -2,6 +2,7 @@
     "watch": [
         "src"
     ],
+    "ignore": ["src/data"],
     "ext": "ts,js,json",
     "exec": "tsx src/index.ts"
 }

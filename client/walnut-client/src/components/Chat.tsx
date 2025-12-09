@@ -1,13 +1,14 @@
 import { useContext, useState, useEffect, useRef, type JSX } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import getResponse, { forgetContext } from "../apis/apis";
+import getResponse from "../apis/apis";
 import {
     PromptContext,
     ModelContext,
     PromptCountContext,
     MessageContext,
 } from "../context/context";
+import { ChatMetaContext } from "../context/ChatMetaContext";
 
 function Chat() {
     const { messages, setMessages } = useContext(MessageContext);
@@ -15,13 +16,13 @@ function Chat() {
     const { prompt } = useContext(PromptContext)!;
     const { promptCount } = useContext(PromptCountContext)!;
     const { model } = useContext(ModelContext)!;
+    const { chatTitle, setChatTitle, chatCreationDateTime, setChatCreationDateTime } =
+        useContext(ChatMetaContext);
 
     const scrollRef = useRef<HTMLDivElement>(null);
     const messagesEndRef = useRef<HTMLDivElement>(null);
-
-    useEffect(() => {
-        forgetContext();
-    }, []);
+    const lastProcessedRef = useRef<number>(-1);
+    const isProcessingRef = useRef<boolean>(false);
 
     useEffect(() => {
         if (promptCount === 0) setMessages([]);
@@ -79,25 +80,61 @@ function Chat() {
     }
 
     useEffect(() => {
-        if (prompt && promptCount !== 0) {
-            setMessages((prev) => [...prev, { type: "prompt", content: prompt }]);
+        if (!prompt) return;
+        if (lastProcessedRef.current === promptCount) return;
+        if (isProcessingRef.current) return;
 
-            async function fetchAndAnimateResponse() {
-                const response = await getResponse(prompt, model);
-                responseAnimation(response?.response);
+        lastProcessedRef.current = promptCount;
+        isProcessingRef.current = true;
+
+        setMessages((prev) => {
+            const last = prev[prev.length - 1];
+            if (last && last.type === "prompt" && last.content === prompt) return prev;
+            return [...prev, { type: "prompt", content: prompt }];
+        });
+
+        const chatCountToSend = Math.max(0, promptCount - 1);
+
+        (async () => {
+            try {
+                const response = await getResponse(
+                    prompt,
+                    model,
+                    chatTitle,
+                    chatCreationDateTime,
+                    chatCountToSend
+                );
+
+                if (
+                    chatCountToSend === 0 &&
+                    response?.chatTitle &&
+                    response?.chatCreationDateTime
+                ) {
+                    setChatTitle(response.chatTitle);
+                    setChatCreationDateTime(response.chatCreationDateTime);
+                }
+
+                await responseAnimation(response?.response || "");
+            } catch (err) {
+                setMessages((prev) => [
+                    ...prev,
+                    {
+                        type: "response",
+                        content: "Failed to get response",
+                        isAnimating: false,
+                    },
+                ]);
+            } finally {
+                isProcessingRef.current = false;
             }
-
-            fetchAndAnimateResponse();
-        }
+        })();
     }, [promptCount]);
 
     const copyToClipboard = async (text: string) => {
         if (navigator.clipboard && window.isSecureContext) {
             try {
                 await navigator.clipboard.writeText(text);
-                console.log("[Clipboard] Copied via Clipboard API");
-            } catch (err) {
-                console.warn("[Clipboard] Clipboard API failed, using fallback:", err);
+            } catch {
                 fallbackCopyToClipboard(text);
             }
         } else {
@@ -106,31 +143,20 @@ function Chat() {
     };
 
     const fallbackCopyToClipboard = (text: string) => {
-        try {
-            const textarea = document.createElement("textarea");
-            textarea.value = text;
-            textarea.style.position = "fixed";
-            textarea.style.left = "-9999px";
-            document.body.appendChild(textarea);
-            textarea.focus();
-            textarea.select();
-            document.execCommand("copy");
-            document.body.removeChild(textarea);
-            console.log("[Clipboard] Copied via fallback method");
-        } catch (err) {
-            console.error("[Clipboard] Fallback copy failed:", err);
-        }
+        const textarea = document.createElement("textarea");
+        textarea.value = text;
+        textarea.style.position = "fixed";
+        textarea.style.left = "-9999px";
+        document.body.appendChild(textarea);
+        textarea.focus();
+        textarea.select();
+        document.execCommand("copy");
+        document.body.removeChild(textarea);
     };
 
     const createPromptDiv = (prompt: string): JSX.Element => (
         <div className="group flex flex-col items-end max-w-[70%] ml-auto h-max space-y-1">
-            <div
-                className="
-                    font-urbanist font-medium p-3 px-5
-                    bg-walnut-accent-darker text-white rounded-4xl break-words 
-                    transition-all duration-300 shadow-md
-                "
-            >
+            <div className="font-urbanist font-medium p-3 px-5 bg-walnut-accent-darker text-white rounded-4xl break-words transition-all duration-300 shadow-md">
                 <ReactMarkdown remarkPlugins={[remarkGfm]}>{prompt}</ReactMarkdown>
             </div>
 
@@ -138,17 +164,9 @@ function Chat() {
                 <button
                     title="Copy prompt"
                     onClick={() => copyToClipboard(prompt)}
-                    className="
-                        cursor-pointer p-1 rounded-md 
-                        hover:brightness-75 hover:bg-walnut-accent-40
-                        duration-200 flex items-center space-x-1
-                    "
+                    className="cursor-pointer p-1 rounded-md hover:brightness-75 hover:bg-walnut-accent-40 duration-200 flex items-center space-x-1"
                 >
-                    <img
-                        src="./copy-text-accent-icon.png"
-                        alt="Copy"
-                        className="h-4 w-4"
-                    />
+                    <img src="./copy-text-accent-icon.png" alt="Copy" className="h-4 w-4" />
                 </button>
             </div>
         </div>
@@ -156,13 +174,7 @@ function Chat() {
 
     const createResponseDiv = (response: string): JSX.Element => (
         <div className="group flex flex-col items-start max-w-[100%] mr-auto h-max space-y-1">
-            <div
-                className="
-                    font-urbanist font-medium p-3 px-5
-                    text-walnut-dark bg-walnut-accent-100 rounded-4xl break-words 
-                    transition-all duration-300 
-                "
-            >
+            <div className="font-urbanist font-medium p-3 px-5 text-walnut-dark bg-walnut-accent-100 rounded-4xl break-words transition-all duration-300">
                 <ReactMarkdown remarkPlugins={[remarkGfm]}>{response}</ReactMarkdown>
             </div>
 
@@ -170,17 +182,9 @@ function Chat() {
                 <button
                     title="Copy response"
                     onClick={() => copyToClipboard(response)}
-                    className="
-                        cursor-pointer p-1 rounded-md 
-                        hover:brightness-75 hover:bg-walnut-accent-40
-                        duration-200 flex items-center space-x-1
-                    "
+                    className="cursor-pointer p-1 rounded-md hover:brightness-75 hover:bg-walnut-accent-40 duration-200 flex items-center space-x-1"
                 >
-                    <img
-                        src="./copy-text-icon.png"
-                        alt="Copy"
-                        className="h-4 w-4"
-                    />
+                    <img src="./copy-text-icon.png" alt="Copy" className="h-4 w-4" />
                 </button>
             </div>
         </div>
@@ -190,18 +194,8 @@ function Chat() {
         <div className="w-[calc(100vw-18rem)] h-[calc(85vh)] mx-[9rem] mt-[15vh] relative z-10">
             <div
                 ref={scrollRef}
-                className="h-full overflow-y-auto overflow-x-hidden [overflow-anchor:none]"
-                style={{
-                    scrollbarWidth: "none",
-                    msOverflowStyle: "none",
-                }}
+                className="h-full overflow-y-auto overflow-x-hidden no-scrollbar"
             >
-                <style>{`
-                    .chat-container::-webkit-scrollbar {
-                        display: none;
-                    }
-                `}</style>
-
                 <div className="chat-container space-y-4 mb-36 text-lg">
                     {messages.map((message, index) => (
                         <div key={index} className="w-full flex">

@@ -2,7 +2,6 @@ import dotenv from "dotenv";
 import app from "./app/app";
 import connectDb from "./config/config";
 import errorHandler from "./utils/errorHandler.utils";
-import { clear } from "./rag/rag";
 
 dotenv.config({ quiet: true });
 
@@ -15,7 +14,6 @@ const HOST: string = process.env.HOST || 'localhost';
         console.log('Successfuly connected to the database');
         app.listen(PORT, HOST, async () => {
             console.log(`Server is running at -> http://${HOST}:${PORT}`);
-            await clear();
         });
     } catch (err) {
         errorHandler('./index.ts', err);

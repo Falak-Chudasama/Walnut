@@ -26,3 +26,13 @@
     --walnut-pale: #FFF5E8;
     --walnut-accent-75: rgba(255, 223, 181, 0.75);
 }
+
+/* Hide scrollbars everywhere the class is used */
+.no-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+
+.no-scrollbar {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}

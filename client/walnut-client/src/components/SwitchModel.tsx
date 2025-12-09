@@ -53,7 +53,7 @@ function SwitchModel() {
     }, [model, showModels]);
 
     return (
-        <div className={`absolute ${promptCount === 0 ? "top-[20%]" : "top-[30%]"} duration-500 left-0 ${ hovered ? "w-max" : "w-fit" } h-max z-5`}>
+        <div className={`absolute ${promptCount === 0 ? "top-[30%]" : "top-[40%]"} duration-500 left-0 ${ hovered ? "w-max" : "w-fit" } h-max z-5`}>
             <div
                 onClick={() => setShowModels(!showModels)}
                 className={`

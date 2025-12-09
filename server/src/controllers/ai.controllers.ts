@@ -1,3 +1,6 @@
+import fs from "fs";
+import path from "path";
+import { fileURLToPath } from "url";
 import { Request, Response } from "express";
 import { embed, search, clear } from "../rag/rag";
 import groqAPI from "../apis/groq.apis";
@@ -6,170 +9,170 @@ import openRouterAPI from "../apis/openRouter.apis";
 import models from "../constants/constants";
 import errorHandler from "../utils/errorHandler.utils";
 
-const defaultPromptSysMessage: string = "You are Walnut, an intelligent, helpful, and friendly female AI assistant for the user Tony Stank who created you and is using you. Respond to the him in a supportive, conversational, yet informative tone, do not sound robotic. Maintain clarity and relevance. Always prioritize his understanding and engagement. Give only genuine and true responses, do not make up anything and respond. Do not unnecessarily greet the user if you have context or previous response, greet only when it is the beginning of the conversation";
-const defaultSummarizerSysMessage: string = "You are a summarization engine. Your task is to accurately condense the User's Prompt and AI assistant's response (and optional reasoning, if provided) without omitting any specific, factual, or actionable details. The summary must be clean, concise, and information-dense. Preserve all critical insights while eliminating redundancy or filler. Separate the summary into two halves (one for User response and another of AI response)";
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
-const defaultSummarizerModel: string = "llama-4-maverick";
-const summarizerReasoning: boolean = false;
-const summarizerTemp: number = 1;
-const summarizerTopP: number = 1;
+const dataDir = path.join(__dirname, "../data");
+const chatsPath = path.join(dataDir, "chats.json");
+
+if (!fs.existsSync(dataDir)) fs.mkdirSync(dataDir);
+if (!fs.existsSync(chatsPath)) fs.writeFileSync(chatsPath, JSON.stringify({ chats: [] }, null, 2), "utf8");
+
+const defaultPromptSysMessage = `
+You are Walnut, a precise, reliable and humanlike AI assistant.
+Be accurate, helpful and clear. Avoid hallucination.
+Use retrieved context only when relevant.
+Greet only when no prior context exists.
+`;
+
 const baseK = 3;
 const maxK = 12;
+
 let prevResponse = "";
 
 const getAPIFn = (model: string): [Function, string] => {
     let API: Function | null = () => { };
-    let APIModel: string = "NULL_MODEL";
+    let APIModel = "NULL_MODEL";
     if (models.groq[model]) {
         API = groqAPI;
         APIModel = models.groq[model];
-    }
-    else if (models.github[model]) {
+    } else if (models.github[model]) {
         API = githubAPI;
         APIModel = models.github[model];
-    }
-    else if (models.openRouter[model]) {
+    } else if (models.openRouter[model]) {
         API = openRouterAPI;
         APIModel = models.openRouter[model];
     }
-
     return [API, APIModel];
 };
 
-const parseContext = (contexts: object[]): string => {
-    const parsedContext: string[] = [];
-
-    contexts.forEach((context) => {
-        const contextStr: string = `${context.text} - ${context.metadata.source === 'User' ? "User's Previous Prompt" : "AI Assistant's Previous Response"}`;
-        parsedContext.push(contextStr);
-    });
-
-    return parsedContext.join('\n\n');
+const parseContext = (contexts: any[]): string => {
+    if (!contexts?.length) return "";
+    return contexts
+        .map((c) => `${c.text} — ${c.metadata.source === "User" ? "User" : "Assistant"}`)
+        .join("\n\n");
 };
 
-const summarizeConversation = async (prompt: string, response: string, reasoning: string = "") => {
-    const [API, APIModel] = getAPIFn(defaultSummarizerModel);
-
-    const messages: object[] = [
-        {
-            role: "system",
-            content: defaultSummarizerSysMessage
-        },
-        {
-            role: "system",
-            content: `THIS IS USER's PROMPT :: ${prompt}`
-        },
-        {
-            role: "system",
-            content: `THIS IS RESPONSE :: ${response}`
-        },
-        {
-            role: "system",
-            content: `THIS IS REASONING :: ${reasoning}`
-        }
-    ];
-
-    try {
-        const result = await API(messages, APIModel, summarizerReasoning, summarizerTemp, summarizerTopP);
-        if (!result || !result.success) {
-            throw new Error(result?.error || "Internal Server Error");
-        } else if (!result.response) {
-            throw new Error(result?.error || "Could not get response from the API");
-        }
-        return result;
-    } catch (err) {
-        errorHandler('./src/controllers/ai.controllers.ts', err);
-        console.log(err);
-    }
+const readChats = () => {
+    const raw = fs.readFileSync(chatsPath, "utf8");
+    return JSON.parse(raw || "{}") || { chats: [] };
 };
 
+const writeChats = (data: any) => {
+    fs.writeFileSync(chatsPath, JSON.stringify(data, null, 2), "utf8");
+};
 
-const message = async (req: Request, res: Response) => {
-    const { prompt, model, needReasoning, temperature, top_p } = req.body;
+export const message = async (req: Request, res: Response) => {
+    const { prompt, model, chatTitle, chatCreationDateTime, chatCount, needReasoning, temperature, top_p } = req.body;
+
+    console.log(chatCount); // delit
+    console.log(chatTitle); // delit
+    console.log(chatCreationDateTime); // delit
 
     if (!prompt) return res.status(422).send({ error: "No prompt was given" });
     if (!model) return res.status(422).send({ error: "No model name was given" });
 
     const [API, APIModel] = getAPIFn(model);
-
-    if (!API) {
-        return res.status(404).send({ error: `Invalid AI model "${model}" was chosen` });
-    }
+    if (!API) return res.status(404).send({ error: `Invalid AI model "${model}"` });
 
     try {
         const dynamicK = Math.min(maxK, Math.ceil(prompt.length / 100) + baseK);
-
         const context = await search(prompt, dynamicK);
 
-        const messages: object[] = [
-            {
-                role: "system",
-                content: defaultPromptSysMessage
-            },
-            {
-                role: "system",
-                content: `Greet the user only if the following is empty, else you continue the conversation: ${prevResponse}`
-            },
-            {
-                role: "system",
-                content: `${parseContext(context.results)}`
-            },
-            {
-                role: "system",
-                content: `This is the present time: ${new Date()}`
-            },
-            {
-                role: "user",
-                content: prompt
-            }
+        const messages = [
+            { role: "system", content: defaultPromptSysMessage },
+            { role: "system", content: `Previous response: ${prevResponse || ""}` },
+            { role: "system", content: `Retrieved context:\n${parseContext(context.results)}` },
+            { role: "system", content: `Timestamp: ${new Date().toISOString()}` },
+            { role: "user", content: prompt }
         ];
 
         const result = await API(messages, APIModel, needReasoning, temperature, top_p);
-        if (!result || !result.success) {
-            return res.status(500).send({ error: result?.error || "Internal Server Error" });
-        } else if (!result.response) {
-            return res.status(500).send({ error: result?.error || "Could not get response from the API" });
+        if (!result?.success || !result.response) return res.status(500).send({ error: "AI Error" });
+
+        const rawChunk = `USER: ${prompt}\nASSISTANT: ${result.response}`;
+        await embed(rawChunk);
+
+        prevResponse = result.response;
+
+        const data = readChats();
+
+        let finalChatTitle = chatTitle;
+        let finalChatCreationDateTime = chatCreationDateTime;
+
+        if (chatCount === 0) {
+            finalChatTitle = prompt.trim().substring(0, 60);
+            finalChatCreationDateTime = new Date().toISOString();
+
+            data.chats.push({
+                chatTitle: finalChatTitle,
+                chatCreationDateTime: finalChatCreationDateTime,
+                chatCount,
+                messages: [
+                    { role: "user", content: prompt },
+                    { role: "assistant", content: result.response }
+                ]
+            });
+
+            writeChats(data);
+
+            return res.status(200).send({
+                result,
+                context,
+                chatTitle: finalChatTitle,
+                chatCreationDateTime: finalChatCreationDateTime
+            });
         }
 
-        let summarizedResult = "";
-        if (result.reasoning) {
-            summarizedResult = await summarizeConversation(prompt, result.response, result.reasoning); 
-        } else {
-            summarizedResult = await summarizeConversation(prompt, result.response); 
+        let existing = data.chats.find(
+            (c: any) =>
+                c.chatTitle === chatTitle &&
+                c.chatCreationDateTime === chatCreationDateTime
+        );
+
+        if (!existing) {
+            finalChatTitle = "Chat " + Date.now();
+            finalChatCreationDateTime = new Date().toISOString();
+            data.chats.push({
+                chatTitle: finalChatTitle,
+                chatCreationDateTime: finalChatCreationDateTime,
+                chatCount,
+                messages: [
+                    { role: "user", content: prompt },
+                    { role: "assistant", content: result.response }
+                ]
+            });
+            writeChats(data);
+            return res.status(200).send({
+                result,
+                context,
+                chatTitle: finalChatTitle,
+                chatCreationDateTime: finalChatCreationDateTime
+            });
         }
 
-        if (!summarizedResult?.response) {
-            return res.status(500).send({ error: "Summarization failed." });
-        }
+        existing.messages.push({ role: "user", content: prompt });
+        existing.messages.push({ role: "assistant", content: result.response });
 
-        await embed(summarizedResult.response);
+        writeChats(data);
 
-        prevResponse = `YOUR PREVIOUS RESPONSE : ${result.response}`;
         return res.status(200).send({ result, context });
     } catch (err) {
-        errorHandler('./src/controllers/ai.controllers.ts', err);
-        return res.status(500).send({ error: "Unhandled error occurred during AI API call" });
+        errorHandler("./src/controllers/ai.controllers.ts", err);
+        return res.status(500).send({ error: "Unhandled backend error" });
     }
 };
 
-const forgetContext = async (req: Request, res: Response) => {
+export const forgetContext = async (req: Request, res: Response) => {
     try {
         prevResponse = "";
-        const response = await clear();
-        if (!response || !response.success) {
-            return res.status(500).send({ error: response?.error || "Internal Server Error" });
-        }
-        return res.status(200).send({ message: 'Successfully cleared context', succuss: true })
+        const out = await clear();
+        if (!out?.success) return res.status(500).send({ error: out?.error || "Failed to clear context" });
+        return res.status(200).send({ message: "Context cleared", success: true });
     } catch (err) {
-        errorHandler('./src/controllers/ai.controllers.ts', err);
-        return res.status(500).send({ error: "Unhandled error occurred during AI API call" });
+        errorHandler("./src/controllers/ai.controllers.ts", err);
+        return res.status(500).send({ error: "Unhandled backend error" });
     }
 };
 
-export {
-    message,
-    summarizeConversation as summarizeResponse,
-    forgetContext
-};
-
-export default message
+export default message;
