@@ -634,6 +634,14 @@
         {
           "role": "assistant",
           "content": "You have 5 apples."
+        },
+        {
+          "role": "user",
+          "content": "I have 5 Apples haha"
+        },
+        {
+          "role": "assistant",
+          "content": "That’s a nice handful of apples! 🍎 Anything special you’d like to do with them—perhaps a snack, a recipe, or a fun math problem? Let me know how I can help."
         }
       ]
     },
@@ -1134,6 +1142,127 @@
         {
           "role": "assistant",
           "content": "Hey! How can I assist you today?"
+        }
+      ]
+    },
+    {
+      "chatTitle": "Hey",
+      "chatCreationDateTime": "2025-12-09T02:39:38.017Z",
+      "chatCount": 0,
+      "messages": [
+        {
+          "role": "user",
+          "content": "Hey"
+        },
+        {
+          "role": "assistant",
+          "content": "How can I assist you today?"
+        },
+        {
+          "role": "user",
+          "content": "I need your help, I am theodore"
+        },
+        {
+          "role": "assistant",
+          "content": "Hello Theodore, I'm here to help. What do you need assistance with today?"
+        },
+        {
+          "role": "user",
+          "content": "You remember my name?"
+        },
+        {
+          "role": "assistant",
+          "content": "Yes, I remember your name as Theodore, from our previous conversation."
+        }
+      ]
+    },
+    {
+      "chatTitle": "You remember my name?",
+      "chatCreationDateTime": "2025-12-09T02:40:10.614Z",
+      "chatCount": 0,
+      "messages": [
+        {
+          "role": "user",
+          "content": "You remember my name?"
+        },
+        {
+          "role": "assistant",
+          "content": "I don’t have your name on record yet. Could you let me know what you’d like me to call you? I’ll remember it for the rest of our conversation."
+        }
+      ]
+    },
+    {
+      "chatTitle": "What is my name, Walnut?",
+      "chatCreationDateTime": "2025-12-09T02:40:18.835Z",
+      "chatCount": 0,
+      "messages": [
+        {
+          "role": "user",
+          "content": "What is my name, Walnut?"
+        },
+        {
+          "role": "assistant",
+          "content": "I’m still not sure what you’d like me to call you. Could you let me know your name? I’ll remember it for the rest of our conversation."
+        }
+      ]
+    },
+    {
+      "chatTitle": "What is my name, Walnut?",
+      "chatCreationDateTime": "2025-12-09T02:40:22.603Z",
+      "chatCount": 0,
+      "messages": [
+        {
+          "role": "user",
+          "content": "What is my name, Walnut?"
+        },
+        {
+          "role": "assistant",
+          "content": "Hello! I don’t have your name on record, so I’m not sure how to address you. If you’d like, feel free to tell me your name and I’ll use it in our conversation."
+        }
+      ]
+    },
+    {
+      "chatTitle": "What is my name Walnut?",
+      "chatCreationDateTime": "2025-12-09T02:40:27.740Z",
+      "chatCount": 0,
+      "messages": [
+        {
+          "role": "user",
+          "content": "What is my name Walnut?"
+        },
+        {
+          "role": "assistant",
+          "content": "I don’t have your name on record, so I’m not sure how to address you. If you’d like, just let me know your name and I’ll use it in our conversation."
+        }
+      ]
+    },
+    {
+      "chatTitle": "I have 5 Apples haha",
+      "chatCreationDateTime": "2025-12-09T02:41:09.443Z",
+      "chatCount": 0,
+      "messages": [
+        {
+          "role": "user",
+          "content": "I have 5 Apples haha"
+        },
+        {
+          "role": "assistant",
+          "content": "Sounds like a nice snack! 🍎 Anything you’d like to do with those 5 apples—maybe a recipe, storage tips, or something else? Let me know how I can help."
+        }
+      ]
+    },
+    {
+      "chatTitle": "How many Apples do I have?",
+      "chatCreationDateTime": "2025-12-09T02:41:16.961Z",
+      "chatCount": 0,
+      "messages": [
+        {
+          "role": "user",
+          "content": "How many Apples do I have?"
+        },
+        {
+          "role": "assistant",
+          "content": "You mentioned that you have **5 apples**."
         }
       ]
     }

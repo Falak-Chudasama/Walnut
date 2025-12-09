@@ -3,29 +3,11 @@ const models: Record<string,Record<string,string>> = {
         "llama-3": "llama-3.3-70b-versatile",
         "llama-4-maverick": "meta-llama/llama-4-maverick-17b-128e-instruct",
         "deepseek-r1": 'deepseek-r1-distill-llama-70b',
-        "playai": "playai-tts",
-        "kimi": "moonshotai/kimi-k2-instruct",
+        "groq": "groq/compound",
+        "kimi": "moonshotai/kimi-k2-instruct-0905",
         "gpt-oss": "openai/gpt-oss-120b",
         "qwen-3-small": "qwen/qwen3-32b"
     },
-    github: {
-        "gpt-5":"openai/gpt-5",
-        "gpt-5-mini":"openai/gpt-5-mini",
-        "gpt-4o": "openai/gpt-4o",
-        "gpt-4o-mini": "openai/gpt-4o-mini",
-        "gpt-4.1": "openai/gpt-4.1",
-        "mistral-med": "mistral-ai/mistral-medium-2505",
-        "llama-4-scout": "meta/Llama-4-Scout-17B-16E-Instruct",
-        "deepseek-v3": "deepseek/DeepSeek-V3-0324",
-        "grok-3": "xai/grok-3",
-        "phi-4": "microsoft/Phi-4-reasoning"
-    },
-    openRouter: {
-        "qwen-3": "qwen/qwen3-235b-a22b:free",
-        "gemini-2.0": "google/gemini-2.0-flash-exp:free",
-        "gpt-oss-small": "openai/gpt-oss-20b:free",
-        "llama-nemotron":"nvidia/llama-3.1-nemotron-ultra-253b-v1:free"
-    }
 }
 
 export { models }

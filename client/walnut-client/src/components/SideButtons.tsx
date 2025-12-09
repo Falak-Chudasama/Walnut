@@ -1,4 +1,3 @@
-// src/components/SideButtons.tsx
 import { useState, useEffect, useRef, useContext } from "react";
 import { ChatMetaContext } from "../context/ChatMetaContext";
 import { PromptContext, PromptCountContext, MessageContext } from "../context/context";
