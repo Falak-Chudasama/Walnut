@@ -1,22 +1,30 @@
 import { useContext } from "react";
-import { PromptCountContext } from "../context/context";
-import { forgetContext } from "../apis/apis";
+import { PromptCountContext, MessageContext, PromptContext } from "../context/context";
 import { ChatMetaContext } from "../context/ChatMetaContext";
+import { forgetContext } from "../apis/apis";
 
 function NewChat() {
     const { promptCount, setPromptCount } = useContext(PromptCountContext)!;
     const { setChatTitle, setChatCreationDateTime } = useContext(ChatMetaContext);
+    const { setMessages } = useContext(MessageContext)!;
+    const { setPrompt } = useContext(PromptContext)!;
 
     return (
         <div className="group absolute top-[30%] duration-500 left-0 h-max z-50">
             <div
                 onClick={() => {
                     setTimeout(() => {
+                        setPrompt("");
+                        setMessages([]);                        
+                        sessionStorage.setItem("messages", JSON.stringify([]));
+
                         setPromptCount(0);
                         setChatTitle("");
                         setChatCreationDateTime("");
+
                         sessionStorage.removeItem("chatTitle");
                         sessionStorage.removeItem("chatCreationDateTime");
+
                         forgetContext();
                     }, 100);
                 }}
